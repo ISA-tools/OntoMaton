@@ -1,3 +1,36 @@
+// OntoMaton is a component of the ISA software suite (http://www.isa-tools.org)
+//
+// License:
+// OntoMaton is licensed under the Common Public Attribution License version 1.0 (CPAL)
+//
+// EXHIBIT A. CPAL version 1.0
+// “The contents of this file are subject to the CPAL version 1.0 (the “License”);
+// you may not use this file except in compliance with the License. You may obtain a
+// copy of the License at http://isatab.sf.net/licenses/OntoMaton-license.html.
+// The License is based on the Mozilla Public License version 1.1 but Sections
+// 14 and 15 have been added to cover use of software over a computer network and
+// provide for limited attribution for the Original Developer. In addition, Exhibit
+// A has been modified to be consistent with Exhibit B.
+//
+// Software distributed under the License is distributed on an “AS IS” basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+// the specific language governing rights and limitations under the License.
+//
+// The Original Code is OntoMaton.
+// The Original Developer is the Initial Developer. The Initial Developer of the
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com 
+// http://www.isa-tools.org). All portions of the code written by the ISA Team are
+// Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
+//
+// EXHIBIT B. Attribution Information
+// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Phrase: Developed by the ISA Team
+// Attribution URL: http://www.isa-tools.org
+// Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
+// Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+
+
 function getSourceAndAccessionPositionsForTerm(column) {
     // we will look at positions 1 & 2 after the column to determine if the source and accession columns
     // particular to ISAtab are present.
@@ -76,7 +109,7 @@ function insertOntologySourceInformationInInvestigationBlock(ontologyObject) {
         investigationSheet.getRange(locationInformation.sourceVersion, locationInformation.insertionPoint).setValue(ontologyObject.ontologyVersion);
         investigationSheet.getRange(locationInformation.sourceDescription, locationInformation.insertionPoint).setValue(ontologyObject.ontologyDescription);
     }
-
+  
 
 }
 
@@ -106,16 +139,21 @@ function getIndexesToInsertInto(sheet, ontologySectionIndex, sourceName) {
             locationInformation.sourceDescription = rowIndex;
         }
     }
-
+  
     return locationInformation;
 }
 
 function insertTermInformationInTermSheet(ontologyObject) {
-    var termSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("terms");
-
+    var termSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Terms");
+    
+    if(termSheet == undefined) {
+        termSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Terms");
+        SpreadsheetApp.getActiveSpreadsheet().toast("The Term sheet is used to maintain information about all the ontologies you have entered.", 
+                                                    "Term Sheet Added Automatically", -1);
+    }
 
     if(termSheet != undefined) {
-        // we have a term sheet, so we can enter information about the term here.
+        // we have a term sheet, so we can enter information about the term here. 
         var insertionRow = findNextBlankRow(termSheet);
         termSheet.getRange(insertionRow, 1).setValue(ontologyObject.term);
         termSheet.getRange(insertionRow, 2).setValue(ontologyObject.accession);
@@ -129,4 +167,65 @@ function insertTermInformationInTermSheet(ontologyObject) {
 function findNextBlankRow(sheet) {
 
   return sheet.getLastRow()+1;
+}
+
+function findRestrictionForCurrentColumn() {
+  var restriction = new Object();
+    restriction.ontologyId = "";
+    restriction.branch = "";
+    restriction.version = "";
+  
+  try {
+  
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+    
+    var activeSheet = SpreadsheetApp.getActiveSheet();
+    var selectedRange = activeSheet.getActiveSelection();
+    var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
+    
+    Logger.log("Getting restriction for " + columnName);
+    
+    if(restrictionSheet != undefined) {
+            for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
+                if (restrictionSheet.getRange(row, 1).getValue() == columnName) {
+                    restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
+                    restriction.branch = restrictionSheet.getRange(row, 3).getValue();
+                    restriction.version = restrictionSheet.getRange(row, 4).getValue();
+                    return restriction;
+                }
+                
+                // check the other way for transposed sheets
+                if (restrictionSheet.getRange(1, row).getValue() == columnName) {
+                    restriction.ontologyId = restrictionSheet.getRange(2, row).getValue();
+                    restriction.branch = restrictionSheet.getRange(3, row).getValue();
+                    restriction.version = restrictionSheet.getRange(4, row).getValue();
+                    return restriction;
+                }
+            }
+  }
+       
+} catch(e) {
+  app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(e.message);
+} finally {
+  return restriction;
+}
+}
+
+
+function fetchFromCache(searchString) {
+  var cache = CacheService.getPublicCache();
+  var cachedContent = cache.get(searchString);
+  if (cachedContent != null) {
+    return cachedContent;
+  }
+}
+
+function storeInCache(searchString, content) {
+  try {
+  var cache = CacheService.getPublicCache();
+  cache.put(searchString, content, 1500); // caches result for 25 minutes
+  } catch(e) {
+    Logger.log("Can't store this value.")
+  }
 }

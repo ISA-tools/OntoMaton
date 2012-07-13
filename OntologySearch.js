@@ -1,20 +1,41 @@
-function onOpen() {
-    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    var ontologyMenu = [
-        {name:"Ontology Search", functionName:"ontologySearch"},
-        {name:"Autotag with Ontologies", functionName:"autotagTerms"}
-    ];
-
-    spreadsheet.addMenu("OntoMaton", ontologyMenu);
-
-}
+// OntoMaton is a component of the ISA software suite (http://www.isa-tools.org)
+//
+// License:
+// OntoMaton is licensed under the Common Public Attribution License version 1.0 (CPAL)
+//
+// EXHIBIT A. CPAL version 1.0
+// “The contents of this file are subject to the CPAL version 1.0 (the “License”);
+// you may not use this file except in compliance with the License. You may obtain a
+// copy of the License at http://isatab.sf.net/licenses/OntoMaton-license.html.
+// The License is based on the Mozilla Public License version 1.1 but Sections
+// 14 and 15 have been added to cover use of software over a computer network and
+// provide for limited attribution for the Original Developer. In addition, Exhibit
+// A has been modified to be consistent with Exhibit B.
+//
+// Software distributed under the License is distributed on an “AS IS” basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+// the specific language governing rights and limitations under the License.
+//
+// The Original Code is OntoMaton.
+// The Original Developer is the Initial Developer. The Initial Developer of the
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com 
+// http://www.isa-tools.org). All portions of the code written by the ISA Team are
+// Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
+//
+// EXHIBIT B. Attribution Information
+// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Phrase: Developed by the ISA Team
+// Attribution URL: http://www.isa-tools.org
+// Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
+// Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
 function ontologySearch() {
     var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
     var app = UiApp.createApplication().setHeight(480);
     app.add(app.loadComponent("OntologySearchGUI"));
-    app.setTitle("Drag to move");
+    app.setTitle("Move");
 
     // Setting
 
@@ -54,6 +75,7 @@ function handleEnterKeyEvent(e) {
     }
 }
 
+
 function searchBioportal(e) {
     var app = UiApp.getActiveApplication();
 
@@ -67,9 +89,18 @@ function searchBioportal(e) {
                 "/?ontologyids=" + restriction.ontologyId + "&subtreerootconceptid=" + restriction.branch + 
                 "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
             
-            Logger.log(searchString);
+            // we cache results and try to retrieve them on every new execution.
+            var cacheResult = fetchFromCache(searchString);
+            var text;
+            
+            if(cacheResult != null) {
+                text = cacheResult;
+                SpreadsheetApp.getActiveSpreadsheet().toast("Terms retrieved from cache.", "Cache accessed", -1);
+            } else {
+                text = UrlFetchApp.fetch(searchString).getContentText();
+                storeInCache(searchString, text);
+            }
 
-            var text = UrlFetchApp.fetch(searchString).getContentText();
             var doc = Xml.parse(text, true);
             var searchResultBeans = doc.success.data.page.contents.searchResultList.getElements("searchBean");
 
@@ -135,57 +166,23 @@ function searchBioportal(e) {
             // Need to add a listener to the tree to get the selected term.
             // this then needs to be inserted into the spreadsheet cell, if running normally,
             // or if an investigation sheet is detected, things are done as in ISAcreator.
+            app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(""); 
         } else {
             app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText("Please enter a term with 3 or more characters. ");
             app.createDialogBox(false, true).setText("Please enter a term with more than 3 characters").setTitle("Input Error");
         }
     } catch (e) {
         Logger.log(e.message);
-        app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText("Sorry, BioPortal appears to be down at present. Sorry for the inconvenience.");
-        //app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(e.message);
+        //app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText("Sorry, BioPortal appears to be down at present. Sorry for the inconvenience.");
+        app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(e.message);
     }
-
+    
     app.getElementById("progressIndicator").setVisible(false);
     app.getElementById("searchButton").setEnabled(true);
     return app;
 }
 
-function findRestrictionForCurrentColumn() {
-  var restriction = new Object();
-    restriction.ontologyId = "";
-    restriction.branch = "";
-    restriction.version = "";
-  
-  try {
-  
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-  
-    var sheets = ss.getSheets();
 
-    var activeSheet = SpreadsheetApp.getActiveSheet();
-    var selectedRange = activeSheet.getActiveSelection();
-    var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
-    Logger.log("Getting restriction for " + columnName);
-    
-    for (var sheet in sheets) {
-        if (sheets[sheet].getName() == "Restrictions") {
-            for (var row = 1; row <= sheets[sheet].getLastRow(); row++) {
-                if (sheets[sheet].getRange(row, 1).getValue() == columnName) {
-                    restriction.ontologyId = sheets[sheet].getRange(row, 2).getValue();
-                    restriction.branch = sheets[sheet].getRange(row, 3).getValue();
-                    restriction.version = sheets[sheet].getRange(row, 4).getValue();
-                    return restriction;
-                }
-            }
-        }
-    }
-} catch(e) {
-  app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(e.message);
-} finally {
-  return restriction;
-}
-    
-}
 
 function itemSelectionHandler(e) {
     var app = UiApp.getActiveApplication();

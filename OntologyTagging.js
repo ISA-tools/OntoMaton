@@ -1,8 +1,41 @@
+// OntoMaton is a component of the ISA software suite (http://www.isa-tools.org)
+//
+// License:
+// OntoMaton is licensed under the Common Public Attribution License version 1.0 (CPAL)
+//
+// EXHIBIT A. CPAL version 1.0
+// “The contents of this file are subject to the CPAL version 1.0 (the “License”);
+// you may not use this file except in compliance with the License. You may obtain a
+// copy of the License at http://isatab.sf.net/licenses/OntoMaton-license.html.
+// The License is based on the Mozilla Public License version 1.1 but Sections
+// 14 and 15 have been added to cover use of software over a computer network and
+// provide for limited attribution for the Original Developer. In addition, Exhibit
+// A has been modified to be consistent with Exhibit B.
+//
+// Software distributed under the License is distributed on an “AS IS” basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+// the specific language governing rights and limitations under the License.
+//
+// The Original Code is OntoMaton.
+// The Original Developer is the Initial Developer. The Initial Developer of the
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com 
+// http://www.isa-tools.org). All portions of the code written by the ISA Team are
+// Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
+//
+// EXHIBIT B. Attribution Information
+// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Phrase: Developed by the ISA Team
+// Attribution URL: http://www.isa-tools.org
+// Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
+// Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+
 function autotagTerms() {
     var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
     var app = UiApp.createApplication().setHeight(500);
     app.add(app.loadComponent("TermTaggerGUI"));
+    app.setTitle("Move");
 
     // Setting
     var progressIndicator = app.getElementById("progressIndicator")
@@ -105,7 +138,7 @@ function tagTermHandler() {
             tree.setStyleAttribute("font-family", "sans-serif").setStyleAttribute("color", "#666").setStyleAttribute("background", "none");
 
             var rootPanel = app.createHorizontalPanel();
-            var rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">Results - choose replacement(s) for free text</span>");
+            var rootLabel = app.createHTML("<span style=\"font-size:12px;font-weight:bold;color:olivedrab\">Results - choose replacement(s) for free text</span>");
             rootPanel.add(rootLabel);
 
             var rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");
@@ -118,7 +151,7 @@ function tagTermHandler() {
                 var freeTextToTerms = valuesToSend[value];
 
                 var freeTextValuePanel = app.createHorizontalPanel();
-                var freeTextValueInformationLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold\">" + value + "</span>");
+                var freeTextValueInformationLabel = app.createHTML("<span style=\"font-size:12px;font-weight:lighter;\">" + value + "</span>");
                 freeTextValuePanel.add(freeTextValueInformationLabel);
 
                 var freeTextTermTreeItem = app.createTreeItem().setWidget(freeTextValuePanel);
@@ -166,9 +199,8 @@ function tagTermHandler() {
         } else {
             app.getElementById("termDefinition").setText("Please select cells with content.");
         }
-
     } catch (e) {
-        app.getElementById("termDefinition").setText("Please select cells with content. " + e.message);
+        app.getElementById("termDefinition").setText("Problem encountered searching in BioPortal.");
     } finally {
         app.getElementById("progressIndicator").setVisible(false);
     }
