@@ -35,6 +35,23 @@ function showAbout() {
     var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
     var app = UiApp.createApplication().setHeight(480);
-    app.add(app.loadComponent("About"));
+  
+    var absolutePanel = app.createAbsolutePanel();
+    absolutePanel.setSize(480, 390);
+    
+    absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton.png"),35,0);
+    absolutePanel.add(createLabel(app,"version 1.0 beta", "sans-serif", "normal", "12px", "#81A32B"), 345, 90);
+  
+    absolutePanel.add(createLabel(app, "OntoMaton makes use of the NCBO BioPortal Web Services to facilitate ontology lookup and tagging within Google Spreadsheets.",
+                                 "sans-serif", "lighter", "14px", "#939598"), 15, 170);
+    
+    absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/part_of_isatools.png"), 200, 230);
+  
+    absolutePanel.add(createLabel(app, "OntoMaton was developed by the ISA team (http://www.isa-tools.org) at the University of Oxford to aid users in the use of ontologies in their day to day work.",
+                                      "sans-serif", "lighter", "14px", "#939598"), 15, 345);
+  
+    app.add(absolutePanel);
     mydoc.show(app);
 }
+
+

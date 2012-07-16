@@ -34,12 +34,11 @@ function autotagTerms() {
     var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
     var app = UiApp.createApplication().setHeight(500);
-    app.add(app.loadComponent("TermTaggerGUI"));
+    createOntologyTaggingGUI(app);
     app.setTitle("Move");
 
     // Setting
-    var progressIndicator = app.getElementById("progressIndicator")
-        .setUrl("http://mentalized.net/activity-indicators/indicators/netlife/spinner3-greenie.gif");
+    var progressIndicator = app.getElementById("progressIndicator");
 
     var loadSpinner = app.createClientHandler()
         .forTargets(progressIndicator)
@@ -51,6 +50,46 @@ function autotagTerms() {
     searchButton.addClickHandler(loadSpinner);
 
     SpreadsheetApp.getActiveSpreadsheet().show(app);
+}
+
+function createOntologyTaggingGUI(app) {
+    var absolutePanel = app.createAbsolutePanel();
+    absolutePanel.setSize(480, 500);
+    
+    absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton-tagging.png"),120,0);
+
+    // adding search entry field and button
+    absolutePanel.add(createLabel(app, "Select the cells in the spreadsheet you wish to tag with ontology terms, then click the 'tag' button below. Results will appear shortly.", "sans-serif", "lighter", "14px", "#939598")
+                      .setHorizontalAlignment(UiApp.HorizontalAlignment.CENTER)
+                     ,26, 86);
+  
+    var searchButton = app.createButton().setText("Tag").setStyleAttribute("background", "#81A32B").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");
+    searchButton.setHeight(25).setWidth(59);  
+    searchButton.setId("tagTerms");
+    
+    absolutePanel.add(searchButton, 220, 126);
+    absolutePanel.add(app.createImage("http://mentalized.net/activity-indicators/indicators/netlife/spinner3-greenie.gif").setHeight(30).setWidth(30).setId("progressIndicator").setVisible(false),400,126);  
+    
+    // adding results pane.
+    var scrollPanel = app.createScrollPanel().setStyleAttribute("background", "whiteSmoke");
+    scrollPanel.setHeight(308).setWidth(480);
+    scrollPanel.setId("resultScroller");
+  
+    var textContainerForNoResults = app.createAbsolutePanel();
+    textContainerForNoResults.setHeight(301).setWidth(461);
+    textContainerForNoResults.add(createLabel(app, "No results to display", "sans-serif", "normal", "13px", "DarkGray").setHorizontalAlignment(UiApp.HorizontalAlignment.CENTER), 161, 151);
+  
+    scrollPanel.add(textContainerForNoResults);
+  
+    absolutePanel.add(scrollPanel, 26, 162);
+    
+    // finally adding footer showing any errors and the isatools logo.
+    absolutePanel.add(createLabel(app, "", "sans-serif", "bold", "11px", "crimson").setId("termDefinition").setWidth(300).setHeight(20), 26, 475);
+    absolutePanel.add(app.createImage("http://isatab.sourceforge.net/assets/img/isatools-sml.png"),380,470);
+    
+    app.add(absolutePanel);
+  
+    return app;
 }
 
 function tagTermHandler() {
@@ -80,8 +119,6 @@ function tagTermHandler() {
 
         if (valuesToTag != "") {
             var restriction = findRestrictionForCurrentColumn();
-
-            Logger.log("values to send " + valuesToTag);
 
             var payload =
             {
@@ -136,6 +173,7 @@ function tagTermHandler() {
             var tree = app.createTree().setAnimationEnabled(true).setWidth(350).setId("ontologyTree");
             // tree styling
             tree.setStyleAttribute("font-family", "sans-serif").setStyleAttribute("color", "#666").setStyleAttribute("background", "none");
+            tree.setWidth(450);
 
             var rootPanel = app.createHorizontalPanel();
             var rootLabel = app.createHTML("<span style=\"font-size:12px;font-weight:bold;color:olivedrab\">Results - choose replacement(s) for free text</span>");
@@ -167,21 +205,20 @@ function tagTermHandler() {
                     if (ontologyDictionary[key] == undefined) {
 
                         var panel = app.createHorizontalPanel();
-                        var ontologyInformationLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold\">" + resultObj.ontologyDescription + "</span>");
+                        var ontologyInformationLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold\">" + resultObj.ontologyDescription + " version " + resultObj.ontologyVersion + "</span>");
                         panel.add(ontologyInformationLabel);
 
-                        ontologyDictionary[key] = app.createTreeItem().setWidget(panel).setId(resultObj.ontologyDescription);
+                        ontologyDictionary[key] = app.createTreeItem().setWidget(panel).setId(resultObj.ontologyDescription + " version " + resultObj.ontologyVersion);
 
                         freeTextTermTreeItem.addItem(ontologyDictionary[key]);
                     }
 
                     var panel = app.createHorizontalPanel();
-                    var button = app.createButton("<div style=\"font-size:10px\">Replace</div>").setSize("40px", "10px")
+                    var button = app.createButton("<div style=\"font-size:10px\">Replace</div>").setHeight(17).setWidth(48)
                         .setId(resultObj.term + "::" + resultObj.accession + "::" + resultObj.ontologyId + "::" + resultObj.conceptIdShort + "::" + resultObj.ontologyVersion + "::" + resultObj.ontologyDescription + "::" + value);
                     button.setStyleAttribute("background", "#E6E7E8").setStyleAttribute("color", "#666").setStyleAttribute("padding-top", "0px");
 
-                    var label = app.createHTML("<div style=\"padding-top:4px; padding-left:3px\"><span style=\"font-size:11px\">"
-                        + resultObj.term + " <span style=\"color:olivedrab;\">(" + resultObj.ontologyDescription + " version " + resultObj.ontologyVersion + ")</span></span></div>");
+                  var label = app.createHTML("<div style=\"padding-top:4px; padding-left:3px\"><span style=\"font-size:11px\">" + resultObj.term + "<span style=\"font-size:9px;\">   (" + resultObj.accession + ")</span>" +  "</span></div>");
                     panel.add(button);
 
                     var selectHandler = app.createServerClickHandler("replaceItemSelectionHandler");
@@ -238,7 +275,7 @@ function replaceItemSelectionHandler(e) {
 
     insertTermInformationInTermSheet(ontologyObject);
 
-    app.getElementById("termDefinition").setText(ontologyObject.freeText + " replaced by " + ontologyObject.term);
+    app.getElementById("termDefinition").setStyleAttribute("color","olivedrab").setText(ontologyObject.freeText + " replaced!");
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = SpreadsheetApp.getActiveSheet();
     var selectedRange = sheet.getActiveSelection();

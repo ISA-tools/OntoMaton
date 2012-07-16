@@ -229,3 +229,10 @@ function storeInCache(searchString, content) {
     Logger.log("Can't store this value.")
   }
 }
+
+function createLabel(app, text, fontfamily, fontweight, fontsize, color) {
+     var label = app.createLabel(text); 
+     label.setStyleAttribute("font-family", fontfamily).setStyleAttribute("font-weight", fontweight)
+       .setStyleAttribute("font-size", fontsize).setStyleAttribute("color", color);
+     return label;
+}
