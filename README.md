@@ -2,11 +2,8 @@
 
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
-###Ontology Search
-![image](http://isatools.files.wordpress.com/2012/07/ontomaton-search-shot.png?w=400)
-
-###Ontology Tagging
-![image](http://isatools.files.wordpress.com/2012/07/ontomaton-tag-shot.png?w=400)
+###Ontology Search & automated tagging
+![image](http://isatools.files.wordpress.com/2012/07/ontomaton-search-shot.png?w=350) ![image](http://isatools.files.wordpress.com/2012/07/ontomaton-tag-shot.png?w=350)
 
 ###Restricting OntoMaton's search space
 You can restrict the search space of OntoMaton through the addition of a sheet named 'Restrictions'. This sheet should have the following column headers:
