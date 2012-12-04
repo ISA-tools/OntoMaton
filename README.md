@@ -2,12 +2,6 @@
 
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
-### Merchandise
-
-![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?color=Black&amp;height=250&amp;width=250) ![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?side=Back&color=Black&height=250&width=250) 
-
-Fancy an OntoMaton t-shirt? We haven't got any to give away...yet! But...you can buy one of these rather snazzy t-shirts from [Cafepress](http://www.cafepress.co.uk/isatools.741842417#).
-
 ###Ontology Search
 ![image](http://isatools.files.wordpress.com/2012/07/ontomaton-search-shot.png?w=600)
 
@@ -44,4 +38,11 @@ If you have any queries, please email us at [link](mailto:isatools@googlegroups.
 This work is licensed through a [CPAL license](http://isatab.sf.net/licenses/OntoMaton-license.html), meaning that any derivitives should carry a powered by OntoMaton logo, shown here.
 
 ![image](http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png)
+
+### Merchandise
+
+![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?color=Black&amp;height=250&amp;width=250) ![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?side=Back&color=Black&height=250&width=250) 
+
+Fancy an OntoMaton t-shirt? We haven't got any to give away...yet! But...you can buy one of these rather snazzy t-shirts from [Cafepress](http://www.cafepress.co.uk/isatools.741842417#).
+
 
