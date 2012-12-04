@@ -40,6 +40,6 @@ This work is licensed through a [CPAL license](http://isatab.sf.net/licenses/Ont
 
 ![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?color=Black&amp;height=250&amp;width=250) ![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?side=Back&color=Black&height=250&width=250) 
 
-Fancy an OntoMaton t-shirt? We haven't got any to give away...yet! But...you can buy one of these rather snazzy t-shirts from [Cafepress](http://www.cafepress.co.uk/isatools.741842417#).
+Fancy an OntoMaton t-shirt? We haven't got any to give away...yet! But...you can buy one of these rather snazzy t-shirts from [Spreadshirts](http://antarctic-design.spreadshirt.co.uk/men-s-classic-t-shirt-A22910590/customize/color/2) for just £15!
 
 
