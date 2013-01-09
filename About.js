@@ -53,5 +53,3 @@ function showAbout() {
     app.add(absolutePanel);
     mydoc.show(app);
 }
-
-
