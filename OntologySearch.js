@@ -38,14 +38,12 @@ function ontologySearch() {
     app.setTitle("Move");
 
     var progressIndicator = app.getElementById("progressIndicator");
-
     var searchButton = app.getElementById("searchButton");
     var searchBox = app.getElementById("searchTerm");
-
     var loadSpinner = app.createClientHandler().forTargets(progressIndicator).setVisible(true);
     var buttonDisabler = app.createClientHandler().forEventSource().setEnabled(false);
-    
     var enterKeyHandler = app.createServerKeyHandler('handleEnterKeyEvent');
+  
     searchBox.addKeyUpHandler(enterKeyHandler);
     searchBox.addKeyUpHandler(loadSpinner);
   
@@ -151,10 +149,10 @@ function searchBioportal(e) {
             var rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");
 
             tree.addItem(rootNode);
-
-            var ontologyDictionary = {};
-
-            for (var resultIndex in searchResultBeans) {
+          
+          var ontologyDictionary = {};
+          
+          for (var resultIndex in searchResultBeans) {
                 var result = searchResultBeans[resultIndex];
                 var ontologyLabel = result.ontologyDisplayLabel.getText() + " (version " + result.ontologyVersionId.getText() + ")";
 
@@ -169,23 +167,25 @@ function searchBioportal(e) {
                 var panel = app.createHorizontalPanel();
                 var selectButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Select</div>").setHeight(17).setWidth(45)
                     .setId(result.preferredName.getText() + "::" + result.conceptId.getText() + "::" + result.ontologyId.getText() + "::" + result.conceptIdShort.getText() + "::" + result.ontologyVersionId.getText() + "::" + result.ontologyDisplayLabel.getText());
-                selectButton.setStyleAttribute("background", "#E6E7E8").setStyleAttribute("color", "#666");
-
-                //var definitionButton  = app.createButton("<div style=\"font-size:10px;padding-top:0\">Definition</div>").setSize("47px", "10px")
-                //    .setId(result.preferredName.getText() + "::" + result.conceptId.getText() + "::" + result.ontologyId.getText() +"::" + result.conceptIdShort.getText() + "::" + result.ontologyVersionId.getText());
-                //definitionButton.setStyleAttribute("background", "#E6E7E8").setStyleAttribute("color", "#666");
+                selectButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
+            
+                var detailButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Details</div>").setHeight(17).setWidth(45)
+                    .setId(result.preferredName.getText() + "::" + result.conceptId.getText() + "::" + result.ontologyId.getText() + "::" + result.conceptIdShort.getText() + "::" + result.ontologyVersionId.getText() + "::" + result.ontologyDisplayLabel.getText() + "::detail");
+                detailButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
 
                 var label = app.createHTML("<div style=\"padding-top:4px; padding-left:3px\"><span style=\"font-size:11px\">" + result.preferredName.getText() + "</span></div>");
                 panel.add(selectButton);
+                panel.add(detailButton);
                 //panel.add(definitionButton);
                 panel.add(label);
 
                 var selectHandler = app.createServerClickHandler("itemSelectionHandler");
                 selectButton.addClickHandler(selectHandler);
+            
+                var detailHandler = app.createServerClickHandler("itemDefinitionHandler");
+                detailButton.addClickHandler(detailHandler);
 
-                //var definitionHandler = app.createServerClickHandler("itemDefinitionHandler");
-                //definitionButton.addClickHandler(definitionHandler);
-
+              
                 var treeItem = app.createTreeItem().setWidget(panel);
 
                 ontologyDictionary[ontologyLabel].addItem(treeItem);
@@ -246,26 +246,18 @@ function itemSelectionHandler(e) {
             sheet.getRange(row, sourceAndAccessionPositions.sourceRef).setValue(ontologyObject.ontologyId);
             sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.accession);
         } else {
-            sheet.getRange(row, selectedRange.getColumn()).setValue(ontologyObject.term + "(" + ontologyObject.accession + ")");
+            
+            var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
+            var selectedColumn = selectedRange.getColumn();
+            var nextColumn = selectedColumn +1;
+            if(!isDefaultInsertionMechanism) {
+              sheet.getRange(row, selectedColumn).setValue(ontologyObject.term); 
+              sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
+            } else {
+               sheet.getRange(row, selectedColumn).setValue('=hyperlink("'+  ontologyObject.accession +'";"' + ontologyObject.term + '")')
+            }
         }
     }
     return app;
 }
 
-function itemDefinitionHandler(e) {
-    var app = UiApp.getActiveApplication();
-    var value = e.parameter.source;
-
-    var ontologyObject = createOntologyObjectFromString(value);
-
-    var searchString = "http://rest.bioontology.org/bioportal/concepts/" + ontologyObject.ontologyVersion
-        + "?conceptid=" + ontologyObject.conceptId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
-    Logger.log(searchString);
-
-    var text = UrlFetchApp.fetch(searchString).getContentText();
-    var doc = Xml.parse(text, true);
-
-    var entries = doc.success.data.classBean.getElements("relations");
-
-    return app;
-}
