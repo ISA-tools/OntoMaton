@@ -35,7 +35,8 @@ function onOpen() {
     var ontologyMenu = [
         {name:"Ontology Search", functionName:"ontologySearch"},
         {name:"Autotag with Ontologies", functionName:"autotagTerms"},
-        {name:"About OntoMaton", functionName:"showAbout"}
+        {name:"Settings", functionName:"showSettings"},
+        {name:"About", functionName:"showAbout"}
     ];
     spreadsheet.addMenu("OntoMaton", ontologyMenu);
 }
