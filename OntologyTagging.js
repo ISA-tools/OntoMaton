@@ -59,7 +59,7 @@ function createOntologyTaggingGUI(app) {
     absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton-tagging.png"),120,0);
 
     // adding search entry field and button
-    absolutePanel.add(createLabel(app, "Select the cells in the spreadsheet you wish to tag with ontology terms, then click the 'tag' button below. Results will appear shortly.", "sans-serif", "lighter", "14px", "#939598")
+    absolutePanel.add(createLabel(app, "Select the cells in the spreadsheet you wish to tag with ontology terms, then click the 'tag' button below. Results will appear shortly.", "sans-serif", "lighter", "14px", "#000")
                       .setHorizontalAlignment(UiApp.HorizontalAlignment.CENTER)
                      ,26, 86);
   
@@ -160,8 +160,9 @@ function tagTermHandler() {
                             var fullId = concept.fullId.getText();
                             valueToAnnotatorResult.results[fullId] = new Object();
                             valueToAnnotatorResult.results[fullId].term = concept.preferredName.getText();
-                            valueToAnnotatorResult.results[fullId].accession = concept.fullId.getText();
                             valueToAnnotatorResult.results[fullId].ontologyId = ontology.ontologyId;
+                            valueToAnnotatorResult.results[fullId].accession = concept.fullId.getText();
+                            valueToAnnotatorResult.results[fullId].conceptIdShort = concept.localConceptId.getText().split("/")[1];
                             valueToAnnotatorResult.results[fullId].ontologyDescription = ontology.ontologyDescription;
                             valueToAnnotatorResult.results[fullId].ontologyVersion = concept.localOntologyId.getText();
                         }
@@ -216,10 +217,19 @@ function tagTermHandler() {
                     var panel = app.createHorizontalPanel();
                     var button = app.createButton("<div style=\"font-size:10px\">Replace</div>").setHeight(17).setWidth(48)
                         .setId(resultObj.term + "::" + resultObj.accession + "::" + resultObj.ontologyId + "::" + resultObj.conceptIdShort + "::" + resultObj.ontologyVersion + "::" + resultObj.ontologyDescription + "::" + value);
-                    button.setStyleAttribute("background", "#E6E7E8").setStyleAttribute("color", "#666").setStyleAttribute("padding-top", "0px");
+                    button.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("padding-top", "0px");
 
+                  var detailButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Details</div>").setHeight(17).setWidth(45)
+                  .setId(resultObj.term + "::" + resultObj.accession + "::" + resultObj.ontologyId + "::" + resultObj.conceptIdShort + "::" + resultObj.ontologyVersion + "::" + resultObj.ontologyDescription + "::" + value + "::detail");
+                detailButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
+
+                  
                   var label = app.createHTML("<div style=\"padding-top:4px; padding-left:3px\"><span style=\"font-size:11px\">" + resultObj.term + "<span style=\"font-size:9px;\">   (" + resultObj.accession + ")</span>" +  "</span></div>");
                     panel.add(button);
+                  panel.add(detailButton);
+                  
+                  var detailHandler = app.createServerClickHandler("itemDefinitionHandler");
+                detailButton.addClickHandler(detailHandler);
 
                     var selectHandler = app.createServerClickHandler("replaceItemSelectionHandler");
                     button.addClickHandler(selectHandler);
@@ -297,7 +307,16 @@ function replaceItemSelectionHandler(e) {
                     sheet.getRange(row, sourceAndAccessionPositions.sourceRef).setValue(ontologyObject.ontologyId);
                     sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.accession);
                 } else {
-                    sheet.getRange(row, selectedRange.getColumn()).setValue(ontologyObject.term + "(" + ontologyObject.accession + ")");
+                  
+                  var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
+            var selectedColumn = selectedRange.getColumn();
+            var nextColumn = selectedColumn +1;
+            if(!isDefaultInsertionMechanism) {
+              sheet.getRange(row, selectedColumn).setValue(ontologyObject.term); 
+              sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
+            } else {
+              sheet.getRange(row, selectedColumn).setValue('=hyperlink("'+  ontologyObject.accession +'";"' + ontologyObject.term + '")')
+            }
                 }
             }
         }
