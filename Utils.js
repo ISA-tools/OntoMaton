@@ -41,7 +41,7 @@ function getSourceAndAccessionPositionsForTerm(column) {
         if (sheet.getRange(1, columnIndex).getValue() == "Term Source Ref") {
             sourceObject.sourceRef = columnIndex;
         }
-        if (sheet.getRange(1, columnIndex).getValue() == "Term Source Accession") {
+        if (sheet.getRange(1, columnIndex).getValue() == "Term Accession Number") {
             sourceObject.accession = columnIndex;
         }
     }
@@ -165,7 +165,6 @@ function insertTermInformationInTermSheet(ontologyObject) {
 
 
 function findNextBlankRow(sheet) {
-
   return sheet.getLastRow()+1;
 }
 
@@ -182,27 +181,32 @@ function findRestrictionForCurrentColumn() {
     
     var activeSheet = SpreadsheetApp.getActiveSheet();
     var selectedRange = activeSheet.getActiveSelection();
+    
     var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
+    var transposedColumnName = activeSheet.getRange(selectedRange.getRow(), 1).getValue();
     
     Logger.log("Getting restriction for " + columnName);
     
     if(restrictionSheet != undefined) {
-            for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
-                if (restrictionSheet.getRange(row, 1).getValue() == columnName) {
+            
+      for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
+              
+              var restrictionColumn = restrictionSheet.getRange(row, 1).getValue();
+              
+              if (restrictionColumn == columnName) {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
                     return restriction;
                 }
-                
-                // check the other way for transposed sheets
-                if (restrictionSheet.getRange(1, row).getValue() == columnName) {
-                    restriction.ontologyId = restrictionSheet.getRange(2, row).getValue();
-                    restriction.branch = restrictionSheet.getRange(3, row).getValue();
-                    restriction.version = restrictionSheet.getRange(4, row).getValue();
+        
+              if(restrictionColumn == transposedColumnName) {
+                    restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
+                    restriction.branch = restrictionSheet.getRange(row, 3).getValue();
+                    restriction.version = restrictionSheet.getRange(row, 4).getValue();
                     return restriction;
-                }
-            }
+              }
+    }
   }
        
 } catch(e) {
@@ -235,4 +239,50 @@ function createLabel(app, text, fontfamily, fontweight, fontsize, color) {
      label.setStyleAttribute("font-family", fontfamily).setStyleAttribute("font-weight", fontweight)
        .setStyleAttribute("font-size", fontsize).setStyleAttribute("color", color);
      return label;
+}
+
+function sortOnKeys(dict) {
+
+    var sorted = [];
+    for(var key in dict) {
+        sorted[sorted.length] = key;
+    }
+  sorted.sort();
+
+    var tempDict = {};
+    for(var i = 0; i < sorted.length; i++) {
+        tempDict[sorted[i]] = dict[sorted[i]];
+    }
+
+    return tempDict;
+}
+
+function itemDefinitionHandler(e) {
+    var app = UiApp.getActiveApplication();
+    var value = e.parameter.source;
+    var ontologyObject = createOntologyObjectFromString(value);
+
+    var searchString = "http://rest.bioontology.org/bioportal/concepts/" + ontologyObject.ontologyVersion
+        + "?conceptid=" + ontologyObject.conceptId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42"; // we are using our own
+    Logger.log(searchString);
+
+    var text = UrlFetchApp.fetch(searchString).getContentText();
+    var doc = Xml.parse(text, true);
+
+    var definition = "";
+    if (doc.success.data.classBean.definitions != null) {
+      var strings = doc.success.data.classBean.definitions.getElements("string");
+      for (var strIndex in strings) {
+        var string = strings[strIndex];
+        definition += string.getText() + " ";
+      }
+    }
+
+    if(definition == "") {
+      definition = "No definition available for this term.";
+    }
+
+    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition, ontologyObject.conceptId, -1);
+
+    return app;
 }
