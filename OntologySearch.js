@@ -230,7 +230,6 @@ function itemSelectionHandler(e) {
     var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
 
     // add all terms into a separate sheet with all their information.
-    insertTermInformationInTermSheet(ontologyObject);
   
     if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
       insertOntologySourceInformationInInvestigationBlock(ontologyObject);
@@ -258,6 +257,7 @@ function itemSelectionHandler(e) {
             }
         }
     }
+    insertTermInformationInTermSheet(ontologyObject);
     return app;
 }
 
