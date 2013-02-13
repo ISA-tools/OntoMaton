@@ -2,6 +2,9 @@
 
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
+### Read the Paper in Bioinformatics!
+Access the Open Access Bioinformatics article on OntoMaton [here](http://bioinformatics.oxfordjournals.org/content/29/4/525.full)
+
 ###Ontology Search & automated tagging
 ![image](http://isatools.files.wordpress.com/2012/07/ontomaton-search-shot.png?w=350) ![image](http://isatools.files.wordpress.com/2012/07/ontomaton-tag-shot.png?h=381)
 
