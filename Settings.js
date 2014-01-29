@@ -39,7 +39,7 @@ function showSettings() {
     app.setTitle("Move");
 
     var absolutePanel = app.createAbsolutePanel();
-    absolutePanel.setSize(480, 390);
+    absolutePanel.setSize(480, 400);
 
     absolutePanel.add(app.createImage("http://isatools.files.wordpress.com/2012/11/ontomaton-settings.png"), 120, 0);
 
@@ -90,7 +90,7 @@ function showSettings() {
     // get ontology names to populate the list box.
     var listBox = app.createListBox().setName("ontology").setId("ontology").setSize("80", "20");
 
-    var ontologies = getAllOntologies();
+    var ontologies = getBioPortalOntologies();
 
     for (ontologyId in ontologies) {
         listBox.addItem(ontologyId + " - " + ontologies[ontologyId].name);
@@ -110,21 +110,19 @@ function showSettings() {
     flow.add(addRestrictionButton);
 
     absolutePanel.add(flow, 15, 280);
-  
-    absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "10px"), 15, 330);
+     
     //end BioPortal
   
     // LOV 
-    flow.add(app.createTextBox().setName("columnNameLOV").setId("columnNameLOV").setTag("Column Name").setStyleAttribute("border", "thin solid #939598"));
+    flow.add(app.createTextBox().setName("columnName").setId("columnName").setTag("Column Name").setStyleAttribute("border", "thin solid #939598"));
   
-    var listBoxLOV = app.createListBox().setName("vocabulary").setId("vocabulary").setSize("80", "20");
+    var listBoxLOV = app.createListBox().setName("ontology").setId("ontology").setSize("80", "20");
 
     // get ontology names to populate the list box.
-    var vocabularies = getAllVocabularies();
+    var vocabularies = getLinkedOpenVocabularies();
 
-    for (vocabularyId in vocabularies.vocabularies) {
-        Logger.log("vocabularyId ===>"+ vocabularyId)
-        listBoxLOV.addItem(vocabularies.vocabularies[vocabularyId].prefix + " - " + vocabularies.vocabularies[vocabularyId].titles[0].value);
+    for (vocabularyId in vocabularies) {     
+        listBoxLOV.addItem(vocabularyId + " - " + vocabularies[vocabularyId].name);
     }
   
     flow.add(listBoxLOV);
@@ -134,17 +132,17 @@ function showSettings() {
     addRestrictionLOVButton.setId("vocabularyRuleSet");
 
     var addRestrictionLOVHandler = app.createServerClickHandler("addRestrictionHandler");
-    addRestrictionLOVHandler.addCallbackElement(app.getElementById("columnNameLOV"));
-    addRestrictionLOVHandler.addCallbackElement(app.getElementById("vocabulary"));
+    addRestrictionLOVHandler.addCallbackElement(app.getElementById("columnName"));
+    addRestrictionLOVHandler.addCallbackElement(app.getElementById("ontology"));
     addRestrictionLOVButton.addClickHandler(addRestrictionLOVHandler);
 
     flow.add(addRestrictionLOVButton);
 
     absolutePanel.add(flow, 15, 280);
   
-    absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "10px"), 15, 330);
     //end LOV
    
+    absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "10px"), 15, 390);
   
     var viewRestrictionsButton = app.createButton().setText("View All Restrictions").setStyleAttribute("background", "#666").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");;
     viewRestrictionsButton.setHeight(25).setWidth(140);
@@ -217,7 +215,6 @@ function addRestrictionHandler(e) {
     restrictionSheet.getRange("C1").setValue("Branch");
     restrictionSheet.getRange("D1").setValue("Version");
     restrictionSheet.getRange("E1").setValue("Ontology Name");
-    restrictionSheet.getRange("F1").setValue("Service");
 
     SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
   }
@@ -262,7 +259,7 @@ function setAlternativeOntologyInsertion(e) {
 }
 
 //gets all the ontologies from BioPortal
-function getAllOntologies() {
+function getBioPortalOntologies() {
 
     var searchString = "http://data.bioontology.org/ontologies?apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
 
@@ -292,7 +289,7 @@ function getAllOntologies() {
 }
 
 //gets all the vocabularies from LOV
-function getAllVocabularies(){
+function getLinkedOpenVocabularies(){
   
   var vocabularies; 
   var vocabsURL = "http://lov.okfn.org/dataset/lov/api/v1/vocabs";
@@ -308,5 +305,11 @@ function getAllVocabularies(){
 
   vocabularies = JSON.parse(text);    
   
-  return vocabularies;  
+  var vocabularyDictionary = [];
+  for (vocabularyIndex in vocabularies.vocabularies) {
+    var vocabulary = vocabularies.vocabularies[vocabularyIndex];  
+    vocabularyDictionary[vocabulary.prefix] = {"name":vocabulary.titles[0].value, "uri":vocabulary.uri};
+  }
+      
+  return sortOnKeys(vocabularyDictionary);  
 }

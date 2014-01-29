@@ -171,11 +171,10 @@ function findNextBlankRow(sheet) {
 
 function findRestrictionForCurrentColumn() {
   var restriction = new Object();
-    restriction.ontologyId = "";
-    restriction.source = "";
-    restriction.branch = "";
-    restriction.version = "";
-    restriction.service = "";
+  restriction.ontologyId = "";
+  restriction.source = "";
+  restriction.branch = "";
+  restriction.version = "";
   
   try {
   
@@ -200,7 +199,6 @@ function findRestrictionForCurrentColumn() {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
-                    restriction.service = restrictionSheet.getRange(row, 5).getValue();
                     return restriction;
                 }
         
@@ -208,7 +206,6 @@ function findRestrictionForCurrentColumn() {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
-                    restriction.service = restrictionSheet.getRange(row, 5).getValue();
                     return restriction;
               }
     }

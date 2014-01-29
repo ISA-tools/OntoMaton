@@ -176,36 +176,40 @@ function searchLOV(e) {
         // only perform a search if there is a difference
         var restriction = findRestrictionForCurrentColumn();
         var cache = CacheService.getPrivateCache();
-        var vocabularies = getAllVocabularies();        
-        var vocabLookup = {};
-
-        if (!vocabularies.error) {
-
-            //Logger.log("vocabularies====> " + vocabularies);      
-            Logger.log("Number of vocabularies is " + vocabularies.length);
-            for (v in vocabularies.vocabularies) {
-                var vocabItem = vocabularies.vocabularies[v];
-                //Logger.log("Processing Item...."+vocabItem);
-                //Logger.log(vocabItem.prefix);              
-                //Logger.log(vocabItem.titles[0]);
-              
-                vocabLookup[vocabItem.prefix] = {
-                    "uri": vocabItem.uri,
-                    "title": vocabItem.titles[0].value
-                }
-            }
-        } else {
-            Logger.log("Error when querying vocabularies!");
-        }
-        //// END OF SEARCHING ALL THE LOV VOCABULARIES INFORMATION
-
+        var vocabularies = getLinkedOpenVocabularies();        
+       
         //only perform search if term has 3 or more characters
         if (e.parameter.searchTerm!=null && e.parameter.searchTerm.length > 2) {
        
             Logger.log("search term =====>" + e.parameter.searchTerm);
 
             var url = "http://lov.okfn.org/dataset/lov/api/v1/search?q=" + e.parameter.searchTerm;
-
+          
+            var vocabShortname;
+            var vocabURI;
+           
+            var tree = app.createTree().setAnimationEnabled(true).setWidth(450).setId("ontologyTree");
+            var rootPanel = app.createHorizontalPanel();
+            var rootLabel;
+            var rootNode;
+          
+            if (restriction){              
+              vocabShortname = restriction.ontologyId.replace(/\s/g, "");  //string trim
+              if (vocabularies[vocabShortname]) {
+                vocabURI = vocabularies[vocabShortname].uri;
+                if (vocabURI)
+                   url = "http://lov.okfn.org/dataset/lov/api/v1/search?q=" + e.parameter.searchTerm + "&voc=" + vocabURI;
+              } else {
+                   //empty result                 
+                   rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\"> 0 results for '" + e.parameter.searchTerm + "' in Linked Open Vocabularies restricted to "+ vocabShortname+" </span>"); 
+                   rootPanel.add(rootLabel);   
+                   rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");  
+                   tree.addItem(rootNode);
+                   url = "";
+              }               
+            }
+            
+          if (url!="") {
             Logger.log("URL: " + url);
           
             // we cache results and try to retrieve them on every new execution.
@@ -229,16 +233,18 @@ function searchLOV(e) {
               storeInCache(url, text);
               var count = r.count;
               var results = r.results;
-
-              var tree = app.createTree().setAnimationEnabled(true).setWidth(450).setId("ontologyTree");
+            
               // tree styling
               tree.setStyleAttribute("font-family", "sans-serif").setStyleAttribute("color", "#666").setStyleAttribute("background", "none").setStyleAttribute("font-weight", "lighter");
-              tree.setWidth(450);
-              var rootPanel = app.createHorizontalPanel();
-              var rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + results.length + " results for " + e.parameter.searchTerm + " in Linked Open Vocabularies </span>");
+              tree.setWidth(450);            
+              var rootLabel;
+              if (restriction)
+                rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + results.length + " results for '" + e.parameter.searchTerm + "' in Linked Open Vocabularies restricted to "+ vocabShortname+" </span>");                
+              else 
+                rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + results.length + " results for '" + e.parameter.searchTerm + "' in Linked Open Vocabularies </span>");
               rootPanel.add(rootLabel);
 
-              var rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");
+              rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");
 
               tree.addItem(rootNode);
 
@@ -253,11 +259,11 @@ function searchLOV(e) {
                 if (vocabularyPrefix != null) {
                   Logger.log("vocabularyPrefix====>" + vocabularyPrefix);
 
-                  var vocab_record = vocabLookup[vocabularyPrefix];
+                  var vocab_record = vocabularies[vocabularyPrefix];
 
-                  Logger.log("vocab_record====> title=" + vocab_record.title + " uri= "+ vocab_record.uri);
+                  Logger.log("vocab_record====> title=" + vocab_record.name + " uri= "+ vocab_record.uri);
 
-                  var ontologyLabel = vocab_record.title + "\n (" + vocab_record.uri + ")";
+                  var ontologyLabel = vocab_record.name + "\n (" + vocab_record.uri + ")";
 
                   if (ontologyDictionary[ontologyLabel] == undefined) {
                     var panel = app.createHorizontalPanel();
@@ -271,7 +277,7 @@ function searchLOV(e) {
 
                   //term :: accession :: ontologyId :: conceptId :: ontologyVersion :: ontologyDescription
                   var selectButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Select</div>").setHeight(17).setWidth(45)
-                  .setId(uriPrefixed + "::" + uri + "::" + vocabularyPrefix + "::" + " " + "::" + vocabularyURI  +"::"+ vocab_record.title );
+                  .setId(uriPrefixed + "::" + uri + "::" + vocabularyPrefix + "::" + " " + "::" + vocabularyURI  +"::"+ vocab_record.name );
                   selectButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
                   
                   var matches = results[i].matches;
@@ -322,7 +328,12 @@ function searchLOV(e) {
               // or if an investigation sheet is detected, things are done as in ISAcreator.
               app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText("");
 
-            } // not error           
+           }// not error   
+          } else {
+              Logger.log("here!!!!");
+              app.getElementById("resultScroller").clear();
+              app.getElementById("resultScroller").add(tree);
+          }
 
         } else {
             app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText("Please enter a term with 3 or more characters. ");
@@ -345,7 +356,7 @@ function searchBioPortal(e) {
 
 
     try {
-        var ontologies = getAllOntologies();
+        var ontologies = getBioPortalOntologies();
         // only perform a search if there is a difference
         var restriction = findRestrictionForCurrentColumn();
 
@@ -354,8 +365,13 @@ function searchBioPortal(e) {
             var searchString = "http://data.bioontology.org/search?q=" + e.parameter.searchTerm;
           
             if (restriction){
-                searchString += "&ontology=" + restriction.ontologyId + "&subtree=" + restriction.branch + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
+                if (restriction.branch)
+                  searchString += "&ontology=" + restriction.ontologyId + "&subtree=" + restriction.branch + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
+                else
+                  searchString += "&ontologies=" + restriction.ontologyId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
             }
+            
+            Logger.log("searchString ===> "+ searchString);
 
             // we cache results and try to retrieve them on every new execution.
             var cacheResult = fetchFromCache(searchString);
@@ -377,7 +393,11 @@ function searchBioPortal(e) {
             tree.setStyleAttribute("font-family", "sans-serif").setStyleAttribute("color", "#666").setStyleAttribute("background", "none").setStyleAttribute("font-weight", "lighter");
             tree.setWidth(450);
             var rootPanel = app.createHorizontalPanel();
-            var rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + searchResultBeans.length + " results for " + e.parameter.searchTerm + " in BioPortal </span>");
+            var rootLabel;
+            if (restriction)
+              rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + searchResultBeans.length + " results for " + e.parameter.searchTerm + " in BioPortal restricted to "+restriction.ontologyId+"</span>");
+            else 
+              rootLabel = app.createHTML("<span style=\"font-size:11px;font-weight:bold;color:olivedrab\">" + searchResultBeans.length + " results for " + e.parameter.searchTerm + " in BioPortal </span>");
             rootPanel.add(rootLabel);
 
             var rootNode = app.createTreeItem().setWidget(rootPanel).setId("resultNode");
