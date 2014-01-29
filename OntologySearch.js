@@ -175,23 +175,8 @@ function searchLOV(e) {
 
         // only perform a search if there is a difference
         var restriction = findRestrictionForCurrentColumn();
-
         var cache = CacheService.getPrivateCache();
-
-        var vocabularies;
-
-        if (cache.get("lov_fragments") == null) {
-            /////SEARCHING ALL THE LOV VOCABULARIES INFORMATION
-            var vocabsURL = "http://lov.okfn.org/dataset/lov/api/v1/vocabs";
-            var vocabsResponse = UrlFetchApp.fetch(vocabsURL);
-            var text = vocabsResponse.getContentText();
-            splitResultAndCache(cache, "lov", text);
-        } else {
-            text = getCacheResultAndMerge(cache, "lov");
-        }
-
-        vocabularies = JSON.parse(text);
-
+        var vocabularies = getAllVocabularies();        
         var vocabLookup = {};
 
         if (!vocabularies.error) {
@@ -215,7 +200,7 @@ function searchLOV(e) {
         //// END OF SEARCHING ALL THE LOV VOCABULARIES INFORMATION
 
         //only perform search if term has 3 or more characters
-        if (e.parameter.searchTerm.length > 2) {
+        if (e.parameter.searchTerm!=null && e.parameter.searchTerm.length > 2) {
        
             Logger.log("search term =====>" + e.parameter.searchTerm);
 
@@ -225,8 +210,6 @@ function searchLOV(e) {
           
             // we cache results and try to retrieve them on every new execution.
             var cacheResult = fetchFromCache(url);
-
-            //Logger.log("cacheResult: " + cacheResult);
           
             var text;
 
@@ -265,13 +248,14 @@ function searchLOV(e) {
                 var uri = results[i].uri;
                 var uriPrefixed = results[i].uriPrefixed;
                 var vocabularyPrefix = results[i].vocabularyPrefix;
+                var vocabularyURI = results[i].vocabulary
 
                 if (vocabularyPrefix != null) {
                   Logger.log("vocabularyPrefix====>" + vocabularyPrefix);
 
                   var vocab_record = vocabLookup[vocabularyPrefix];
 
-                  Logger.log("vocab_record====>" + vocab_record);
+                  Logger.log("vocab_record====> title=" + vocab_record.title + " uri= "+ vocab_record.uri);
 
                   var ontologyLabel = vocab_record.title + "\n (" + vocab_record.uri + ")";
 
@@ -285,8 +269,9 @@ function searchLOV(e) {
 
                   var panel = app.createHorizontalPanel();
 
+                  //term :: accession :: ontologyId :: conceptId :: ontologyVersion :: ontologyDescription
                   var selectButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Select</div>").setHeight(17).setWidth(45)
-                                .setId(uriPrefixed + "::" + uri);
+                  .setId(uriPrefixed + "::" + uri + "::" + vocabularyPrefix + "::" + " " + "::" + vocabularyURI  +"::"+ vocab_record.title );
                   selectButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
                   
                   var matches = results[i].matches;
@@ -294,23 +279,19 @@ function searchLOV(e) {
                   var details = "";
 
                   for (j in matches) {
-                    //Logger.log(matches[j]);
-                    var property = matches[j].property;
-                    var propertyPrefixed = matches[j].propertyPrefixed;
-                    var value = matches[j].value;
-                    var valueShort = matches[j].valueShort;
                     
-                    var decode = Xml.parse(value);    
-                    var strDecoded = decode.getElement().getText();
-                    Logger.log("strDecoded ===> "+ strDecoded); 
+                    var value = matches[j].value;
+                                        
+                    try{                      
+                      var text = getTextFromHtml(value)
+                      text = text.replace(/@(\w+)/g," ");                     
+                      details = details +"\n" + text;                       
+                   }catch(e) {                     
+                       details = details + "\n" + value;
+                    }                                        
 
-                    details = details +"\n" + strDecoded; 
-                    //details + "\n" + propertyPrefixed + ":" + valueShort;
                   }
-
-                  Logger.log("uriPrefixed ===> " + uriPrefixed);
-                  Logger.log("details ===> " + details);
-
+              
                   var detailButton = app.createButton("<div style=\"font-size:10px;padding-top:0;font-weight:bold\">Details</div>").setHeight(17).setWidth(45).setId(uriPrefixed + "::" +  details);
                   detailButton.setStyleAttribute("background", "#666").setStyleAttribute("color", "#fff").setStyleAttribute("border", "none");
 

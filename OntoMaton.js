@@ -38,5 +38,5 @@ function onOpen() {
         {name:"Settings", functionName:"showSettings"},
         {name:"About", functionName:"showAbout"}
     ];
-    spreadsheet.addMenu("OntoMaton2", ontologyMenu);
+    spreadsheet.addMenu("OntoMaton", ontologyMenu);
 }

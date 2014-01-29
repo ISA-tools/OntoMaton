@@ -288,7 +288,7 @@ function itemDefinitionHandlerLOV(e) {
       definition = "No definition available for this term.";
     }
   
-    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition);
+    SpreadsheetApp.getActiveSpreadsheet().toast(definition, term, -1);
 
     return app;
 }
@@ -332,3 +332,14 @@ function getCacheResultAndMerge(cache, cacheKey) {
   
 }
 
+function getTextFromHtml(html) {
+  return getTextFromNode(Xml.parse(html, true).getElement());
+}
+
+function getTextFromNode(x) {
+  switch(x.toString()) {
+    case 'XmlText': return x.toXmlString();
+    case 'XmlElement': return x.getNodes().map(getTextFromNode).join('');
+    default: return '';
+  }
+}
