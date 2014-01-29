@@ -92,7 +92,7 @@ function showSettings() {
     var ontologies = getAllOntologies();
 
     for (ontologyId in ontologies) {
-        listBox.addItem(ontologyId + " - " + ontologies[ontologyId]);
+        listBox.addItem(ontologyId + " - " + ontologies[ontologyId].name);
     }
 
     flow.add(listBox);
@@ -173,19 +173,19 @@ function applyAndClose(e) {
 }
 
 function addRestrictionHandler(e) {
-    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+  var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
 
-    if (restrictionSheet == undefined) {
-        var activeSheet = SpreadsheetApp.getActiveSheet();
-        restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Restrictions");
-        restrictionSheet.getRange("A1").setValue("Column Name");
-        restrictionSheet.getRange("B1").setValue("Ontology");
-        restrictionSheet.getRange("C1").setValue("Branch");
-        restrictionSheet.getRange("D1").setValue("Version");
-        restrictionSheet.getRange("E1").setValue("Ontology Name");
+  if (restrictionSheet == undefined) {
+    var activeSheet = SpreadsheetApp.getActiveSheet();
+    restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Restrictions");
+    restrictionSheet.getRange("A1").setValue("Column Name");
+    restrictionSheet.getRange("B1").setValue("Ontology");
+    restrictionSheet.getRange("C1").setValue("Branch");
+    restrictionSheet.getRange("D1").setValue("Version");
+    restrictionSheet.getRange("E1").setValue("Ontology Name");
 
-        SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
-    }
+    SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
+  }
 
   var app = UiApp.getActiveApplication();
   
@@ -196,8 +196,8 @@ function addRestrictionHandler(e) {
     
     var ontology = e.parameter.ontology;
     restrictionSheet.getRange(nextBlankRow, 1).setValue(e.parameter.columnName);
-    restrictionSheet.getRange(nextBlankRow, 2).setValue(ontology.substring(ontology.indexOf("-") + 1));
-    restrictionSheet.getRange(nextBlankRow, 5).setValue(ontology.substring(0, ontology.indexOf("-")));
+    restrictionSheet.getRange(nextBlankRow, 2).setValue(ontology.substring(0, ontology.indexOf("-")));
+    restrictionSheet.getRange(nextBlankRow, 5).setValue(ontology.substring(ontology.indexOf("-")+1));
     
     app.getElementById("status").setText("Restriction for " + e.parameter.columnName + " added.");
   }
@@ -227,31 +227,29 @@ function setAlternativeOntologyInsertion(e) {
 
 function getAllOntologies() {
 
-    var searchString = "http://rest.bioontology.org/bioportal/ontologies?apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
+    var searchString = "http://data.bioontology.org/ontologies?apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
 
     // we cache results and try to retrieve them on every new execution.
-    var cacheResult = fetchFromCache(searchString);
+    var cache = CacheService.getPublicCache();
+
     var text;
 
-    if (cacheResult != null) {
-        text = cacheResult;
-        SpreadsheetApp.getActiveSpreadsheet().toast("Terms retrieved from cache.", "Cache accessed", -1);
-    } else {
+    if (cache.get("ontologies_fragments") == null) {
         text = UrlFetchApp.fetch(searchString).getContentText();
-        storeInCache(searchString, text);
-    }
-
-    var doc = Xml.parse(text, true);
-    var ontologies = doc.success.data.list.getElements("ontologyBean");
-
-    var ontologyDictionary = [];
-    for (ontologyIndex in ontologies) {
-        var ontology = ontologies[ontologyIndex];
-        ontologyDictionary[ontology.displayLabel.getText()] = ontology.ontologyId.getText();
+        splitResultAndCache(cache, "ontologies", text);
+    } else {
+        text = getCacheResultAndMerge(cache, "ontologies");
     }
   
+    var doc = JSON.parse(text);
+    var ontologies = doc;
+
+    var ontologyDictionary = [];
+    for (ontologyIndex in doc) {
+        var ontology = doc[ontologyIndex];
+      ontologyDictionary[ontology.acronym] = {"name":ontology.name, "uri":ontology["@id"]};
+    }
 
     return sortOnKeys(ontologyDictionary);
 
 }
-

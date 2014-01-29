@@ -53,7 +53,8 @@ function createOntologyObjectFromString(ontologyString) {
     // processes the ontology string into an ontology object to be used for population of ISA sections.
     var ontologyDetails = ontologyString.split("::");
     var ontologyObject = new Object();
-    // cy5::http://purl.obolibrary.org/obo/CHEBI_37989::1123::47203::Ontology for Biomedical Investigations
+    // BioPortal -> cy5::http://purl.obolibrary.org/obo/CHEBI_37989::1123::47203::Ontology for Biomedical Investigations
+    // LOV ->   swpo:hasStreetAddress::http://sw-portal.deri.org/ontologies/swportal#hasStreetAddress
     ontologyObject.term = ontologyDetails[0];
     ontologyObject.accession = ontologyDetails[1];
     ontologyObject.ontologyId = ontologyDetails[2];
@@ -171,8 +172,10 @@ function findNextBlankRow(sheet) {
 function findRestrictionForCurrentColumn() {
   var restriction = new Object();
     restriction.ontologyId = "";
+    restriction.source = "";
     restriction.branch = "";
     restriction.version = "";
+    restriction.service = "";
   
   try {
   
@@ -187,7 +190,7 @@ function findRestrictionForCurrentColumn() {
     
     Logger.log("Getting restriction for " + columnName);
     
-    if(restrictionSheet != undefined) {
+    if (restrictionSheet != undefined) {
             
       for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
               
@@ -197,6 +200,7 @@ function findRestrictionForCurrentColumn() {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
+                    restriction.service = restrictionSheet.getRange(row, 5).getValue();
                     return restriction;
                 }
         
@@ -204,6 +208,7 @@ function findRestrictionForCurrentColumn() {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
+                    restriction.service = restrictionSheet.getRange(row, 5).getValue();
                     return restriction;
               }
     }
@@ -260,29 +265,70 @@ function sortOnKeys(dict) {
 function itemDefinitionHandler(e) {
     var app = UiApp.getActiveApplication();
     var value = e.parameter.source;
-    var ontologyObject = createOntologyObjectFromString(value);
+    
+    var term = value.substring(0,value.indexOf("::"));
+    var definition = value.substring(value.lastIndexOf("::") + 2);
 
-    var searchString = "http://rest.bioontology.org/bioportal/concepts/" + ontologyObject.ontologyVersion
-        + "?conceptid=" + ontologyObject.conceptId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42"; // we are using our own
-    Logger.log(searchString);
+    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition, term, -1);
 
-    var text = UrlFetchApp.fetch(searchString).getContentText();
-    var doc = Xml.parse(text, true);
+    return app;
+}
 
-    var definition = "";
-    if (doc.success.data.classBean.definitions != null) {
-      var strings = doc.success.data.classBean.definitions.getElements("string");
-      for (var strIndex in strings) {
-        var string = strings[strIndex];
-        definition += string.getText() + " ";
-      }
-    }
+
+function itemDefinitionHandlerLOV(e) {
+
+    var app = UiApp.getActiveApplication();
+    var value = e.parameter.source;
+    Logger.log("itemDefinitionHandlerLOV "+value);
+  
+    var term = value.substring(0,value.indexOf("::"));
+    var definition = value.substring(value.lastIndexOf("::") + 2);    
 
     if(definition == "") {
       definition = "No definition available for this term.";
     }
-
-    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition, ontologyObject.conceptId, -1);
+  
+    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition);
 
     return app;
 }
+
+/**
+   The cache items have a limited size. This method splits up large 
+   results and can put them back together again
+   
+   cache is an instance of CacheService
+   cache key will be something like lov or bioportal
+   toStore is the text to keep
+**/
+function splitResultAndCache(cache, cacheKey, toStore) {
+  var fragments = 1;
+  if(toStore.length > 5000) {
+    fragments = Math.floor(toStore.length/5000 + (toStore.length%5000 > 0 ? 1 : 0));
+  }
+  
+  var fragmentCount = 0;
+  while(fragmentCount < fragments) {
+    var string_fragment = toStore.substring(fragmentCount * 5000, (fragmentCount + 1) *5000);
+    cache.put(cacheKey + "_" + fragmentCount, string_fragment, 5000);
+    fragmentCount++;
+  }
+  Logger.log("There are " + fragmentCount + " fragments.");
+  cache.put(cacheKey + "_fragments", fragmentCount, 5000);
+}
+
+
+function getCacheResultAndMerge(cache, cacheKey) {
+    var fragments = cache.get(cacheKey + "_fragments");
+    
+    var fullResult = "";
+    
+    var fragmentCount = 0;
+    while(fragmentCount < fragments) {
+       fullResult += cache.get(cacheKey + "_" + fragmentCount);
+       fragmentCount++;
+  }
+  return fullResult;
+  
+}
+

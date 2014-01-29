@@ -40,9 +40,9 @@ function showAbout() {
     absolutePanel.setSize(480, 390);
     
     absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton.png"),35,0);
-    absolutePanel.add(createLabel(app,"version 1.0 beta", "sans-serif", "normal", "12px", "#81A32B"), 345, 90);
+    absolutePanel.add(createLabel(app,"version 2.0 beta", "sans-serif", "normal", "12px", "#81A32B"), 345, 90);
   
-    absolutePanel.add(createLabel(app, "OntoMaton makes use of the NCBO BioPortal Web Services to facilitate ontology lookup and tagging within Google Spreadsheets.",
+    absolutePanel.add(createLabel(app, "OntoMaton makes use of the NCBO BioPortal Web Services and Linked Open Vocabularies services to facilitate ontology lookup and tagging within Google Spreadsheets.",
                                  "sans-serif", "lighter", "14px", "#939598"), 15, 170);
     
     absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/part_of_isatools.png"), 200, 230);
