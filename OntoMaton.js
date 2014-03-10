@@ -33,7 +33,7 @@
 function onOpen() {
     var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     var ontologyMenu = [
-        {name:"Ontology Search", functionName:"ontologySearch"},
+        {name:"Vocabulary Search", functionName:"vocabularySearch"},
         {name:"Autotag with Ontologies", functionName:"autotagTerms"},
         {name:"Settings", functionName:"showSettings"},
         {name:"About", functionName:"showAbout"}
