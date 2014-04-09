@@ -39,7 +39,6 @@ function searchBioPortal(term) {
         var restriction = findRestrictionForCurrentColumn();
 
         if (term.length > 2) {
-            // todo check if particular column has a restriction in the hidden sheet. If so, restrict the search.
             var searchString = "http://data.bioontology.org/search?q=" + term;
 
             if (restriction) {
