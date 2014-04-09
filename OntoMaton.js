@@ -30,13 +30,55 @@
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
+
+/**
+ * Creates a menu entry in the Google Docs UI when the document is opened.
+ */
 function onOpen() {
+
     var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    var ontologyMenu = [
-        {name:"Vocabulary Search", functionName:"vocabularySearch"},
-        {name:"Autotag with Ontologies", functionName:"autotagTerms"},
-        {name:"Settings", functionName:"showSettings"},
-        {name:"About", functionName:"showAbout"}
-    ];
-    spreadsheet.addMenu("OntoMaton", ontologyMenu);
+
+    SpreadsheetApp.getUi().createAddonMenu()
+        .addItem('Perform Ontology Search', 'showOntologySearchSidebar')
+        .addItem('Run Annotator', 'showAnnotatorSidebar')
+        .addItem('About', 'showAbout')
+        .addItem('Settings', 'showSettings')
+        .addToUi();
+}
+
+/**
+ * Runs when the add-on is installed.
+ */
+function onInstall() {
+    onOpen();
+}
+
+
+function showOntologySearchSidebar() {
+    var ui = HtmlService.createHtmlOutputFromFile('SearchSidebar')
+        .setTitle('OntoMaton');
+    SpreadsheetApp.getUi().showSidebar(ui);
+}
+
+function showAnnotatorSidebar() {
+    var ui = HtmlService.createHtmlOutputFromFile('AnnotatorSidebar')
+        .setTitle('OntoMaton');
+    SpreadsheetApp.getUi().showSidebar(ui);
+}
+
+
+function runSearch(service, term) {
+    return performSearch(service,term);
+}
+
+function runAnnotator() {
+    return performAnnotation();
+}
+
+function performSearch(service, term) {
+    if (service == "bioportal") {
+        return searchBioPortal(term);
+    } else {
+        return searchLOV(term);
+    }
 }

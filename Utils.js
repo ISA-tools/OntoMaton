@@ -80,7 +80,6 @@ function insertOntologySourceInformationInInvestigationBlock(ontologyObject) {
     // find investigation file
     for (var sheet in sheets) {
         if (sheets[sheet].getName().indexOf("i_") > -1) {
-            Logger.log("Found investigation file..." + sheets[sheet].getName())
             // we've now got the investigation file.
             // insert the ontology source information if it doesn't already exist here.
             investigationSheet = sheets[sheet];
@@ -110,7 +109,7 @@ function insertOntologySourceInformationInInvestigationBlock(ontologyObject) {
         investigationSheet.getRange(locationInformation.sourceVersion, locationInformation.insertionPoint).setValue(ontologyObject.ontologyVersion);
         investigationSheet.getRange(locationInformation.sourceDescription, locationInformation.insertionPoint).setValue(ontologyObject.ontologyDescription);
     }
-  
+
 
 }
 
@@ -140,17 +139,29 @@ function getIndexesToInsertInto(sheet, ontologySectionIndex, sourceName) {
             locationInformation.sourceDescription = rowIndex;
         }
     }
-  
+
     return locationInformation;
 }
 
 function insertTermInformationInTermSheet(ontologyObject) {
+    var previousSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var activeRange = previousSheet.getActiveRange();
     var termSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Terms");
-    
+
     if(termSheet == undefined) {
         termSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Terms");
-        SpreadsheetApp.getActiveSpreadsheet().toast("The Term sheet is used to maintain information about all the ontologies you have entered.", 
-                                                    "Term Sheet Added Automatically", -1);
+        SpreadsheetApp.getActiveSpreadsheet().toast("The Term sheet is used to maintain information about all the ontologies you have entered.",
+            "Term Sheet Added Automatically", -1);
+
+        termSheet.getRange(1, 1).setValue("Term Name");
+        termSheet.getRange(1, 2).setValue("Term URI");
+        termSheet.getRange(1, 3).setValue("Ontology Source");
+        termSheet.getRange(1, 4).setValue("Ontology URI");
+        termSheet.getRange(1, 5).setValue("Ontology Full Name");
+
+        // Go back to the previous sheet...    
+        SpreadsheetApp.setActiveSheet(previousSheet)
+        SpreadsheetApp.getActiveSheet().setActiveRange(activeRange);
     }
 
     if(termSheet != undefined) {
@@ -165,82 +176,90 @@ function insertTermInformationInTermSheet(ontologyObject) {
 }
 
 
+
 function findNextBlankRow(sheet) {
-  return sheet.getLastRow()+1;
+    return sheet.getLastRow()+1;
 }
 
 function findRestrictionForCurrentColumn() {
-  var restriction = new Object();
-  restriction.ontologyId = "";
-  restriction.source = "";
-  restriction.branch = "";
-  restriction.version = "";
-  
-  try {
-  
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
-    
-    var activeSheet = SpreadsheetApp.getActiveSheet();
-    var selectedRange = activeSheet.getActiveSelection();
-    
-    var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
-    var transposedColumnName = activeSheet.getRange(selectedRange.getRow(), 1).getValue();
-    
-    Logger.log("Getting restriction for " + columnName);
-    
-    if (restrictionSheet != undefined) {
-            
-      for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
-              
-              var restrictionColumn = restrictionSheet.getRange(row, 1).getValue();
-              
-              if (restrictionColumn == columnName) {
+    var restriction = new Object();
+    restriction.ontologyId = "";
+    restriction.source = "";
+    restriction.branch = "";
+    restriction.version = "";
+
+    try {
+
+        var ss = SpreadsheetApp.getActiveSpreadsheet();
+        var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+
+        var activeSheet = SpreadsheetApp.getActiveSheet();
+        var selectedRange = activeSheet.getActiveSelection();
+
+        var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
+        var transposedColumnName = activeSheet.getRange(selectedRange.getRow(), 1).getValue();
+
+
+        if (restrictionSheet != undefined) {
+
+            for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
+
+                var restrictionColumn = restrictionSheet.getRange(row, 1).getValue();
+
+                if (restrictionColumn == columnName) {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
                     return restriction;
                 }
-        
-              if(restrictionColumn == transposedColumnName) {
+
+                if(restrictionColumn == transposedColumnName) {
                     restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
                     restriction.branch = restrictionSheet.getRange(row, 3).getValue();
                     restriction.version = restrictionSheet.getRange(row, 4).getValue();
                     return restriction;
-              }
+                }
+            }
+        }
+
+    } catch(e) {
+        throw e;
+    } finally {
+        return restriction;
     }
-  }
-       
-} catch(e) {
-  app.getElementById("termDefinition").setStyleAttribute("color", "crimson").setText(e.message);
-} finally {
-  return restriction;
-}
 }
 
 
 function fetchFromCache(searchString) {
-  var cache = CacheService.getPublicCache();
-  var cachedContent = cache.get(searchString);
-  if (cachedContent != null) {
-    return cachedContent;
-  }
+    var cache = CacheService.getPrivateCache();
+    var cachedContent = cache.get(searchString);
+    if (cachedContent != null) {
+        return cachedContent;
+    }
 }
 
 function storeInCache(searchString, content) {
-  try {
-  var cache = CacheService.getPublicCache();
-  cache.put(searchString, content, 1500); // caches result for 25 minutes
-  } catch(e) {
-    Logger.log("Can't store this value.")
-  }
+    try {
+        var cache = CacheService.getPrivateCache();
+        cache.put(searchString, content, 1500); // caches result for 25 minutes
+    } catch(e) {
+
+    }
 }
 
 function createLabel(app, text, fontfamily, fontweight, fontsize, color) {
-     var label = app.createLabel(text); 
-     label.setStyleAttribute("font-family", fontfamily).setStyleAttribute("font-weight", fontweight)
-       .setStyleAttribute("font-size", fontsize).setStyleAttribute("color", color);
-     return label;
+    var label = app.createLabel(text);
+    label.setStyleAttribute("font-family", fontfamily).setStyleAttribute("font-weight", fontweight)
+        .setStyleAttribute("font-size", fontsize).setStyleAttribute("color", color);
+    return label;
+}
+
+function sortDictAndReturnSortedKeys(dict) {
+    var sorted = [];
+    for(var key in dict) {
+        sorted.push(key);
+    }
+    return sorted.sort();
 }
 
 function sortOnKeys(dict) {
@@ -249,7 +268,7 @@ function sortOnKeys(dict) {
     for(var key in dict) {
         sorted[sorted.length] = key;
     }
-  sorted.sort();
+    sorted.sort();
 
     var tempDict = {};
     for(var i = 0; i < sorted.length; i++) {
@@ -262,7 +281,7 @@ function sortOnKeys(dict) {
 function itemDefinitionHandler(e) {
     var app = UiApp.getActiveApplication();
     var value = e.parameter.source;
-    
+
     var term = value.substring(0,value.indexOf("::"));
     var definition = value.substring(value.lastIndexOf("::") + 2);
 
@@ -276,67 +295,66 @@ function itemDefinitionHandlerLOV(e) {
 
     var app = UiApp.getActiveApplication();
     var value = e.parameter.source;
-    Logger.log("itemDefinitionHandlerLOV "+value);
-  
+
     var term = value.substring(0,value.indexOf("::"));
-    var definition = value.substring(value.lastIndexOf("::") + 2);    
+    var definition = value.substring(value.lastIndexOf("::") + 2);
 
     if(definition == "") {
-      definition = "No definition available for this term.";
+        definition = "No definition available for this term.";
     }
-  
+
     SpreadsheetApp.getActiveSpreadsheet().toast(definition, term, -1);
 
     return app;
 }
 
 /**
-   The cache items have a limited size. This method splits up large 
-   results and can put them back together again
-   
-   cache is an instance of CacheService
-   cache key will be something like lov or bioportal
-   toStore is the text to keep
-**/
+ The cache items have a limited size. This method splits up large
+ results and can put them back together again
+
+ cache is an instance of CacheService
+ cache key will be something like lov or bioportal
+ toStore is the text to keep
+ **/
 function splitResultAndCache(cache, cacheKey, toStore) {
-  var fragments = 1;
-  if(toStore.length > 5000) {
-    fragments = Math.floor(toStore.length/5000 + (toStore.length%5000 > 0 ? 1 : 0));
-  }
-  
-  var fragmentCount = 0;
-  while(fragmentCount < fragments) {
-    var string_fragment = toStore.substring(fragmentCount * 5000, (fragmentCount + 1) *5000);
-    cache.put(cacheKey + "_" + fragmentCount, string_fragment, 5000);
-    fragmentCount++;
-  }
-  Logger.log("There are " + fragmentCount + " fragments.");
-  cache.put(cacheKey + "_fragments", fragmentCount, 5000);
+    var fragments = 1;
+    if(toStore.length > 5000) {
+        fragments = Math.floor(toStore.length/5000 + (toStore.length%5000 > 0 ? 1 : 0));
+    }
+
+    var fragmentCount = 0;
+    while(fragmentCount < fragments) {
+        var string_fragment = toStore.substring(fragmentCount * 5000, (fragmentCount + 1) *5000);
+        cache.put(cacheKey + "_" + fragmentCount, string_fragment, 5000);
+        fragmentCount++;
+    }
+
+    cache.put(cacheKey + "_fragments", fragmentCount, 5000);
 }
 
 
 function getCacheResultAndMerge(cache, cacheKey) {
     var fragments = cache.get(cacheKey + "_fragments");
-    
+
     var fullResult = "";
-    
+
     var fragmentCount = 0;
     while(fragmentCount < fragments) {
-       fullResult += cache.get(cacheKey + "_" + fragmentCount);
-       fragmentCount++;
-  }
-  return fullResult;
-  
+        fullResult += cache.get(cacheKey + "_" + fragmentCount);
+        fragmentCount++;
+    }
+    return fullResult;
+
 }
 
 function getTextFromHtml(html) {
-  return getTextFromNode(Xml.parse(html, true).getElement());
+    return getTextFromNode(Xml.parse(html, true).getElement());
 }
 
 function getTextFromNode(x) {
-  switch(x.toString()) {
-    case 'XmlText': return x.toXmlString();
-    case 'XmlElement': return x.getNodes().map(getTextFromNode).join('');
-    default: return '';
-  }
+    switch(x.toString()) {
+        case 'XmlText': return x.toXmlString();
+        case 'XmlElement': return x.getNodes().map(getTextFromNode).join('');
+        default: return '';
+    }
 }
