@@ -1,4 +1,7 @@
+<div align="center">
 <img src="http://isatab.sf.net/assets/img/tools/ontomaton.png" align="center"/>
+</div>
+
 
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
@@ -12,14 +15,17 @@ Bioinformatics 2013 29: 525-527.
 ###Ontology Search
 
 From OntoMaton, you can search both the NCBO Bioportal and Linked Open Vocabulary resources within one tool and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
-
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-51-20.png?h=400" align="center"/>
+<div align="center">
+<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-51-20.png?h=500" align="center"/>
+</div>
 
 ###Ontology Tagging
 
 With OntoMaton, you can select a number of spreadsheet cells and then 'tag' them. This means that OntoMaton will take the terms in the cells and send them to BioPortal's Annotator service. The results will come back as a list of the free text terms, showing for each all matches in BioPortal. 
 
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-55-27.png?h=400" align="center"/>
+<div align="center">
+<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-55-27.png?h=500"/>
+</div>
 
 ### Configuring OntoMaton - Settings
 
