@@ -116,7 +116,7 @@ function performAnnotation() {
             return valuesToSend;
 
         } else {
-            throw 'Please select cells with content.';
+            throw 'Please select spreadsheet cells with content for tagging to work.';
         }
     } catch (e) {
         throw e;

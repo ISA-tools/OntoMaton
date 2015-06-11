@@ -37,7 +37,7 @@ function showSettings() {
     var app = UiApp.createApplication().setHeight(480);
 
     var absolutePanel = app.createAbsolutePanel();
-    absolutePanel.setSize(480, 400);
+    absolutePanel.setSize(480, 460);
 
     absolutePanel.add(app.createImage("http://isatools.files.wordpress.com/2012/11/ontomaton-settings.png"), 120, 0);
 
@@ -46,25 +46,19 @@ function showSettings() {
 
     var useDefault = isCurrentSettingOnDefault();
 
-    var option1 = app.createRadioButton("ontologyFormat", "Place hyperlinked term name in field.").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-weight", "lighter").setStyleAttribute("color", "#000");
-    option1.setId("defaultValue").setName("defaultValue");
-    option1.setValue(useDefault);
+    var placementStrategyOptions = app.createListBox().setName("strategy").setId("strategy").setSize("350", "27");
+    placementStrategyOptions.addItem("Place hyperlinked term name in field");
+    placementStrategyOptions.addItem("Place term name and accession in different fields");
 
-    absolutePanel.add(option1, 15, 130);
+    if(!useDefault) {
+        placementStrategyOptions.setSelectedIndex(1);
+    }
 
-    var option2 = app.createRadioButton("ontologyFormat", "Place term name and accession in different fields.").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-weight", "lighter").setStyleAttribute("color", "#000");
-    option2.setId("alternativeValue").setName("alternative");
-    option2.setValue(!useDefault);
+    absolutePanel.add(placementStrategyOptions, 15, 130);
 
-    absolutePanel.add(option2, 15, 150);
-
-    var option1Handler = app.createServerValueChangeHandler('setDefaultOntologyInsertion');
+    var option1Handler = app.createServerValueChangeHandler('setOntologyInsertionStrategy');
     option1Handler.addCallbackElement(absolutePanel);
-    option1.addValueChangeHandler(option1Handler);
-
-    var option2Handler = app.createServerValueChangeHandler('setAlternativeOntologyInsertion');
-    option2Handler.addCallbackElement(absolutePanel);
-    option2.addValueChangeHandler(option2Handler);
+    placementStrategyOptions.addChangeHandler(option1Handler);
 
     absolutePanel.add(createLabel(app, "Restrictions are used to limit the search space for specific columns in your Google Spreadsheet. Do you wish to restrict the search space for fields? ", "sans-serif", "bolder", "13px", "#000"), 15, 200);
     absolutePanel.add(createLabel(app, "All restrictions are added to the 'Restrictions' sheet.", "sans-serif", "lighter", "12px", "#000"), 15, 250);
@@ -85,7 +79,7 @@ function showSettings() {
     flow.add(app.createTextBox().setName("columnName").setId("columnName").setTag("Column Name").setStyleAttribute("border", "thin solid #939598"));
 
     // get ontology names to populate the list box.
-    var listBox = app.createListBox().setName("ontology").setId("ontology").setSize("80", "20");
+    var listBox = app.createListBox().setName("ontology").setId("ontology").setSize("150", "20");
 
     var ontologies = getBioPortalOntologies();
 
@@ -96,7 +90,7 @@ function showSettings() {
     flow.add(listBox);
 
     var addRestrictionButton = app.createButton().setText("Add BioPortal Restriction").setStyleAttribute("background", "#81A32B").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");
-    addRestrictionButton.setHeight(25).setWidth(200);
+    addRestrictionButton.setHeight(25).setWidth(150);
     addRestrictionButton.setId("ontologyRuleSet");
 
     var addRestrictionHandler = app.createServerClickHandler("addRestrictionHandler");
@@ -106,14 +100,14 @@ function showSettings() {
 
     flow.add(addRestrictionButton);
 
-    absolutePanel.add(flow, 15, 280);
+    absolutePanel.add(flow, 15, 290);
 
     //end BioPortal
 
     // LOV 
     flow.add(app.createTextBox().setName("columnName").setId("columnName").setTag("Column Name").setStyleAttribute("border", "thin solid #939598"));
 
-    var listBoxLOV = app.createListBox().setName("ontology").setId("ontology").setSize("80", "20");
+    var listBoxLOV = app.createListBox().setName("ontology").setId("ontology").setSize("150", "20");
 
     // get ontology names to populate the list box.
     var vocabularies = getLinkedOpenVocabularies();
@@ -125,7 +119,7 @@ function showSettings() {
     flow.add(listBoxLOV);
 
     var addRestrictionLOVButton = app.createButton().setText("Add LOV Restriction").setStyleAttribute("background", "#81A32B").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");
-    addRestrictionLOVButton.setHeight(25).setWidth(200);
+    addRestrictionLOVButton.setHeight(25).setWidth(150);
     addRestrictionLOVButton.setId("vocabularyRuleSet");
 
     var addRestrictionLOVHandler = app.createServerClickHandler("addRestrictionHandler");
@@ -139,7 +133,7 @@ function showSettings() {
 
     //end LOV
 
-    absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "10px"), 15, 390);
+    absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "12px"), 15, 355);
 
     var viewRestrictionsButton = app.createButton().setText("View All Restrictions").setStyleAttribute("background", "#666").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");;
     viewRestrictionsButton.setHeight(25).setWidth(140);
@@ -153,8 +147,8 @@ function showSettings() {
     var applyAndCloseHandler = app.createServerClickHandler("applyAndClose");
     applyAndCloseButton.addClickHandler(applyAndCloseHandler);
 
-    absolutePanel.add(viewRestrictionsButton, 15, 355);
-    absolutePanel.add(applyAndCloseButton, 400, 355);
+    absolutePanel.add(viewRestrictionsButton, 10, 375);
+    absolutePanel.add(applyAndCloseButton, 400, 375);
 
     app.add(absolutePanel);
 
@@ -234,25 +228,12 @@ function addRestrictionHandler(e) {
     return app;
 }
 
-function setDefaultOntologyInsertion(e) {
-    var selected = e.parameter.id;
+function setOntologyInsertionStrategy(e) {
+    var option = e.parameter.strategy;
+
     var settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Settings");
-
-    var app = UiApp.getActiveApplication();
-    app.getElementById("alternativeValue").setValue(false);
-
-    settingsSheet.getRange("B1").setValue(true);
-    return app;
-}
-
-function setAlternativeOntologyInsertion(e) {
-    var selected = e.parameter.id;
-    var settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Settings");
-    var app = UiApp.getActiveApplication();
-
-    app.getElementById("defaultValue").setValue(false);
-    settingsSheet.getRange("B1").setValue(false);
-    return app;
+    settingsSheet.getRange("B1").setValue(option == "Place hyperlinked term name in field" ? true : false);
+    return UiApp.getActiveApplication();
 }
 
 //gets all the ontologies from BioPortal

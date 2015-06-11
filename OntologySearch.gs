@@ -39,6 +39,7 @@ function searchBioPortal(term) {
         var restriction = findRestrictionForCurrentColumn();
 
         if (term.length > 2) {
+            // todo check if particular column has a restriction in the hidden sheet. If so, restrict the search.
             var searchString = "http://data.bioontology.org/search?q=" + term;
 
             if (restriction) {
@@ -72,7 +73,7 @@ function searchBioPortal(term) {
                         ontologyDictionary[ontologyLabel] = {"ontology-name": ontologies[ontologyLabel].name, "terms": []};
                     }
 
-                    var ontology_record = {"label": result.prefLabel, "id": result["@id"], "ontology-label": ontologyLabel, "ontology-name": ontologies[ontologyLabel].name, "accession": result.links.self, "ontology": result.links.ontology};
+                    var ontology_record = {"label": result.prefLabel, "id": result["@id"], "ontology-label": ontologyLabel, "ontology-name": ontologies[ontologyLabel].name, "accession": result.links.self, "ontology": result.links.ontology, "url": result.links.ui};
                     var ontology_record_string = JSON.stringify(ontology_record);
 
                     storeInCache(result["@id"], ontology_record_string);
@@ -101,15 +102,11 @@ function searchLOV(term) {
     try {
         // only perform a search if there is a difference
         var restriction = findRestrictionForCurrentColumn();
-        var cache = CacheService.getPrivateCache();
         var vocabularies = getLinkedOpenVocabularies();
 
-
         var url = "http://lov.okfn.org/dataset/lov/api/v1/search?q=" + term;
-        Logger.log(url);
         var vocabShortname;
         var vocabURI;
-        Logger.log(restriction);
         if (restriction.source != "") {
             vocabShortname = restriction.ontologyId.replace(/\s/g, "");  //string trim
             if (vocabularies[vocabShortname]) {
@@ -120,8 +117,6 @@ function searchLOV(term) {
                 url = "";
             }
         }
-
-        Logger.log("URL is " + url);
 
         if (url != "") {
 
@@ -145,7 +140,7 @@ function searchLOV(term) {
                 storeInCache(url, text);
 
                 var results = parsed_result.results;
-                Logger.log(results);
+
                 for (var i in results) {
 
                     var uri = results[i].uri;
@@ -178,9 +173,9 @@ function searchLOV(term) {
                             }
                         }
 
-                        var ontology_record = {"label": uriPrefixed, "id": uri, "ontology-label": vocabularyPrefix, "ontology-name": vocab_record.name, "accession": vocab_record.uri, "ontology": vocab_record.uri, "details": details};
+                        var ontology_record = {"label": uriPrefixed, "id": uri, "ontology-label": vocabularyPrefix, "ontology-name": vocab_record.name, "accession": vocab_record.uri, "ontology": vocab_record.uri, "details": details, "url":uri};
                         var ontology_record_string = JSON.stringify(ontology_record);
-                        cache.put(uri, ontology_record_string);
+                        storeInCache(uri, ontology_record_string);
                         ontologyDictionary[ontologyLabel].terms.push(ontology_record);
 
                     } //vocabularyPrefix not null
@@ -201,20 +196,19 @@ function handleTermInsertion(term_id) {
     var sheet = SpreadsheetApp.getActiveSheet();
     var selectedRange = sheet.getActiveSelection();
 
-    var cache = CacheService.getPrivateCache();
-    var term = JSON.parse(cache.get(term_id));
+    var term = JSON.parse(fetchFromCache(term_id));
     var ontologyObject = {
         "term": term["label"],
         "accession": term_id,
         "ontologyId": term["ontology-label"],
         "ontologyVersion": term["ontology"],
-        "ontologyDescription": term["ontology-name"]
+        "ontologyDescription": term["ontology-name"],
+        "url": term["url"]
     }
 
     // figure out where the source ref and accession columns exist, if they do exist at all. Insertion technique will vary
     // depending on the file being looked at.
     var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
-
     // add all terms into a separate sheet with all their information.
 
     if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
@@ -238,7 +232,7 @@ function handleTermInsertion(term_id) {
                 sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
                 sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
             } else {
-                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.accession + '","' + ontologyObject.term + '")')
+                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '","' + ontologyObject.term + '")')
             }
         }
     }

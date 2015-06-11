@@ -36,8 +36,6 @@
  */
 function onOpen() {
 
-    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-
     SpreadsheetApp.getUi().createAddonMenu()
         .addItem('Perform Ontology Search', 'showOntologySearchSidebar')
         .addItem('Run Annotator', 'showAnnotatorSidebar')
@@ -82,3 +80,4 @@ function performSearch(service, term) {
         return searchLOV(term);
     }
 }
+
