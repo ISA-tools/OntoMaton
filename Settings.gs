@@ -24,7 +24,7 @@
 // Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2015 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
@@ -45,15 +45,15 @@ function showSettings() {
         "sans-serif", "bolder", "13px", "#000"), 15, 100);
 
     var useDefault = isCurrentSettingOnDefault();
-
+  
     var placementStrategyOptions = app.createListBox().setName("strategy").setId("strategy").setSize("350", "27");
     placementStrategyOptions.addItem("Place hyperlinked term name in field");
     placementStrategyOptions.addItem("Place term name and accession in different fields");
-
-    if(!useDefault) {
-        placementStrategyOptions.setSelectedIndex(1);
-    }
-
+  
+  if(!useDefault) {
+    placementStrategyOptions.setSelectedIndex(1);
+  }
+    
     absolutePanel.add(placementStrategyOptions, 15, 130);
 
     var option1Handler = app.createServerValueChangeHandler('setOntologyInsertionStrategy');
@@ -101,21 +101,21 @@ function showSettings() {
     flow.add(addRestrictionButton);
 
     absolutePanel.add(flow, 15, 290);
-
+     
     //end BioPortal
-
+  
     // LOV 
     flow.add(app.createTextBox().setName("columnName").setId("columnName").setTag("Column Name").setStyleAttribute("border", "thin solid #939598"));
-
+  
     var listBoxLOV = app.createListBox().setName("ontology").setId("ontology").setSize("150", "20");
 
     // get ontology names to populate the list box.
     var vocabularies = getLinkedOpenVocabularies();
 
-    for (vocabularyId in vocabularies) {
+    for (vocabularyId in vocabularies) {     
         listBoxLOV.addItem(vocabularyId + " - " + vocabularies[vocabularyId].name);
     }
-
+  
     flow.add(listBoxLOV);
 
     var addRestrictionLOVButton = app.createButton().setText("Add LOV Restriction").setStyleAttribute("background", "#81A32B").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");
@@ -130,26 +130,26 @@ function showSettings() {
     flow.add(addRestrictionLOVButton);
 
     absolutePanel.add(flow, 15, 280);
-
+  
     //end LOV
-
+   
     absolutePanel.add(app.createLabel().setId("status").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size", "12px"), 15, 355);
-
+  
     var viewRestrictionsButton = app.createButton().setText("View All Restrictions").setStyleAttribute("background", "#666").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");;
     viewRestrictionsButton.setHeight(25).setWidth(140);
-
+  
     var applyAndCloseButton = app.createButton().setText("Apply").setStyleAttribute("background", "#81A32B").setStyleAttribute("font-family", "sans-serif").setStyleAttribute("font-size","11px").setStyleAttribute("color", "#ffffff").setStyleAttribute("border", "none");;
     applyAndCloseButton.setHeight(25).setWidth(60);
-
+  
     var viewRestrictionHandler = app.createServerClickHandler("viewRestrictionHandler");
     viewRestrictionsButton.addClickHandler(viewRestrictionHandler);
-
+  
     var applyAndCloseHandler = app.createServerClickHandler("applyAndClose");
     applyAndCloseButton.addClickHandler(applyAndCloseHandler);
-
+  
     absolutePanel.add(viewRestrictionsButton, 10, 375);
     absolutePanel.add(applyAndCloseButton, 400, 375);
-
+  
     app.add(absolutePanel);
 
     createSettingsTab();
@@ -168,7 +168,7 @@ function createSettingsTab() {
 }
 
 function viewRestrictionHandler(e) {
-    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+     var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
 
     if (restrictionSheet == undefined) {
         UiApp.getActiveApplication().getElementById("status").setText("Restriction sheet doesn't exist yet. Add a restriction and it will be created automatically.");
@@ -191,41 +191,41 @@ function isCurrentSettingOnDefault() {
 }
 
 function applyAndClose(e) {
-    var app = UiApp.getActiveApplication();
-    return app.close();
+  var app = UiApp.getActiveApplication();
+  return app.close();
 }
 
 function addRestrictionHandler(e) {
-    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+  var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
 
-    if (restrictionSheet == undefined) {
-        var activeSheet = SpreadsheetApp.getActiveSheet();
-        restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Restrictions");
-        restrictionSheet.getRange("A1").setValue("Column Name");
-        restrictionSheet.getRange("B1").setValue("Ontology");
-        restrictionSheet.getRange("C1").setValue("Branch");
-        restrictionSheet.getRange("D1").setValue("Version");
-        restrictionSheet.getRange("E1").setValue("Ontology Name");
+  if (restrictionSheet == undefined) {
+    var activeSheet = SpreadsheetApp.getActiveSheet();
+    restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Restrictions");
+    restrictionSheet.getRange("A1").setValue("Column Name");
+    restrictionSheet.getRange("B1").setValue("Ontology");
+    restrictionSheet.getRange("C1").setValue("Branch");
+    restrictionSheet.getRange("D1").setValue("Version");
+    restrictionSheet.getRange("E1").setValue("Ontology Name");
 
-        SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
-    }
+    SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
+  }
 
-    var app = UiApp.getActiveApplication();
-
-    if(e.parameter.columnName == "") {
-        app.getElementById("status").setText("Please enter a column name!");
-    } else {
-        var nextBlankRow = findNextBlankRow(restrictionSheet);
-
-        var ontology = e.parameter.ontology;
-
-        restrictionSheet.getRange(nextBlankRow, 1).setValue(e.parameter.columnName);
-        restrictionSheet.getRange(nextBlankRow, 2).setValue(ontology.substring(0, ontology.indexOf("-")));
-        restrictionSheet.getRange(nextBlankRow, 5).setValue(ontology.substring(ontology.indexOf("-")+1));
-
-        app.getElementById("status").setText("Restriction for " + e.parameter.columnName + " added.");
-    }
-    return app;
+  var app = UiApp.getActiveApplication();
+  
+  if(e.parameter.columnName == "") {
+    app.getElementById("status").setText("Please enter a column name!");
+  } else {
+    var nextBlankRow = findNextBlankRow(restrictionSheet);
+    
+    var ontology = e.parameter.ontology;
+    
+    restrictionSheet.getRange(nextBlankRow, 1).setValue(e.parameter.columnName);
+    restrictionSheet.getRange(nextBlankRow, 2).setValue(ontology.substring(0, ontology.indexOf("-")));
+    restrictionSheet.getRange(nextBlankRow, 5).setValue(ontology.substring(ontology.indexOf("-")+1));
+    
+    app.getElementById("status").setText("Restriction for " + e.parameter.columnName + " added.");
+  }
+  return app;
 }
 
 function setOntologyInsertionStrategy(e) {
@@ -239,7 +239,7 @@ function setOntologyInsertionStrategy(e) {
 //gets all the ontologies from BioPortal
 function getBioPortalOntologies() {
 
-    var searchString = "http://data.bioontology.org/ontologies?apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
+    var searchString = "http://data.bioontology.org/ontologies?apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42&display_links=false&display_context=false";
 
     // we cache results and try to retrieve them on every new execution.
     var cache = CacheService.getPrivateCache();
@@ -259,7 +259,7 @@ function getBioPortalOntologies() {
     var ontologyDictionary = [];
     for (ontologyIndex in doc) {
         var ontology = doc[ontologyIndex];
-        ontologyDictionary[ontology.acronym] = {"name":ontology.name, "uri":ontology["@id"]};
+      ontologyDictionary[ontology.acronym] = {"name":ontology.name, "uri":ontology["@id"]};
     }
 
     return sortOnKeys(ontologyDictionary);
@@ -268,26 +268,27 @@ function getBioPortalOntologies() {
 
 //gets all the vocabularies from LOV
 function getLinkedOpenVocabularies(){
+  
+  var vocabularies; 
+  var vocabsURL = "http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list";
+  var cache = CacheService.getPrivateCache();
+  
+  if (cache.get("lov_fragments") == null) {
+     var vocabsResponse = UrlFetchApp.fetch(vocabsURL);
+     var text = vocabsResponse.getContentText();
+     splitResultAndCache(cache, "lov", text);
+  } else {
+     text = getCacheResultAndMerge(cache, "lov");
+  }
 
-    var vocabularies;
-    var vocabsURL = "http://lov.okfn.org/dataset/lov/api/v1/vocabs";
-    var cache = CacheService.getPrivateCache();
-
-    if (cache.get("lov_fragments") == null) {
-        var vocabsResponse = UrlFetchApp.fetch(vocabsURL);
-        var text = vocabsResponse.getContentText();
-        splitResultAndCache(cache, "lov", text);
-    } else {
-        text = getCacheResultAndMerge(cache, "lov");
-    }
-
-    vocabularies = JSON.parse(text);
-
-    var vocabularyDictionary = [];
-    for (vocabularyIndex in vocabularies.vocabularies) {
-        var vocabulary = vocabularies.vocabularies[vocabularyIndex];
-        vocabularyDictionary[vocabulary.prefix] = {"name":vocabulary.titles[0].value, "uri":vocabulary.uri};
-    }
-
-    return sortOnKeys(vocabularyDictionary);
+  vocabularies = JSON.parse(text);    
+  
+  var vocabularyDictionary = [];
+  for (vocabularyIndex in vocabularies) {
+    var vocabulary = vocabularies[vocabularyIndex];
+    vocabularyDictionary[vocabulary.prefix] = {"name":vocabulary.titles[0].value, "uri":vocabulary.uri};
+  }
+  Logger.log(vocabularyDictionary);
+      
+  return sortOnKeys(vocabularyDictionary);  
 }
