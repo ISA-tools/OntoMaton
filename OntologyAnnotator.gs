@@ -24,7 +24,7 @@
 // Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2015 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
@@ -45,7 +45,7 @@ function performAnnotation() {
                 }
             }
         }
-
+      
         var valuesToTag = "";
         for (var valueToTag in valuesToSend) {
 
@@ -101,11 +101,11 @@ function performAnnotation() {
                                     valueToAnnotatorResult.results[ontologyAbbreviation] = {"ontology-name": ontologyName, "terms": []};
                                 }
 
-                                var ontology_record = {"label": concept, "id": annotationResult["@id"], "ontology-label": ontologyAbbreviation, "ontology-name": ontologyName, "accession": annotationResult["@id"], "ontology": ontologyId, "details": "", "freeText":originalTerm};
+                              var ontology_record = {"label": concept, "id": annotationResult["@id"], "ontology-label": ontologyAbbreviation, "ontology-name": ontologyName, "accession": annotationResult["@id"], "ontology": ontologyId, "details": "", "freeText":originalTerm};
                                 var ontology_record_string = JSON.stringify(ontology_record);
-
+                              
                                 storeInCache(annotationResult["@id"], ontology_record_string);
-
+                              
                                 valueToAnnotatorResult.results[ontologyAbbreviation].terms.push(ontology_record);
                             }
                         }
@@ -119,7 +119,7 @@ function performAnnotation() {
             throw 'Please select spreadsheet cells with content for tagging to work.';
         }
     } catch (e) {
-        throw e;
+      throw e;
     }
 }
 
@@ -158,16 +158,16 @@ function replaceTermWithSelectedValue(term_id) {
                     sheet.getRange(row, sourceAndAccessionPositions.sourceRef).setValue(ontologyObject.ontologyId);
                     sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.accession);
                 } else {
-
-                    var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
-                    var selectedColumn = selectedRange.getColumn();
-                    var nextColumn = selectedColumn +1;
-                    if(!isDefaultInsertionMechanism) {
-                        sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
-                        sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
-                    } else {
-                        sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("'+  ontologyObject.accession +'","' + ontologyObject.term + '")')
-                    }
+                  
+            var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
+            var selectedColumn = selectedRange.getColumn();
+            var nextColumn = selectedColumn +1;
+            if(!isDefaultInsertionMechanism) {
+              sheet.getRange(row, selectedColumn).setValue(ontologyObject.term); 
+              sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
+            } else {
+              sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("'+  ontologyObject.accession +'","' + ontologyObject.term + '")')
+            }
                 }
             }
         }
