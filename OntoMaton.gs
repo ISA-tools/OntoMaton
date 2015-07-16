@@ -24,7 +24,7 @@
 // Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2015 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
@@ -36,48 +36,48 @@
  */
 function onOpen() {
 
-    SpreadsheetApp.getUi().createAddonMenu()
-        .addItem('Perform Ontology Search', 'showOntologySearchSidebar')
-        .addItem('Run Annotator', 'showAnnotatorSidebar')
-        .addItem('About', 'showAbout')
-        .addItem('Settings', 'showSettings')
-        .addToUi();
+  SpreadsheetApp.getUi().createAddonMenu()
+      .addItem('Perform Ontology Search', 'showOntologySearchSidebar')
+      .addItem('Run Annotator', 'showAnnotatorSidebar')
+      .addItem('About', 'showAbout')
+      .addItem('Settings', 'showSettings')
+      .addToUi();
 }
 
 /**
  * Runs when the add-on is installed.
  */
 function onInstall() {
-    onOpen();
+  onOpen();
 }
 
 
 function showOntologySearchSidebar() {
-    var ui = HtmlService.createHtmlOutputFromFile('SearchSidebar')
-        .setTitle('OntoMaton');
-    SpreadsheetApp.getUi().showSidebar(ui);
+  var ui = HtmlService.createHtmlOutputFromFile('SearchSidebar')
+      .setTitle('OntoMaton');
+  SpreadsheetApp.getUi().showSidebar(ui);
 }
 
 function showAnnotatorSidebar() {
-    var ui = HtmlService.createHtmlOutputFromFile('AnnotatorSidebar')
-        .setTitle('OntoMaton');
-    SpreadsheetApp.getUi().showSidebar(ui);
+  var ui = HtmlService.createHtmlOutputFromFile('AnnotatorSidebar')
+      .setTitle('OntoMaton');
+  SpreadsheetApp.getUi().showSidebar(ui);
 }
 
 
 function runSearch(service, term) {
-    return performSearch(service,term);
+  return performSearch(service,term);
 }
 
 function runAnnotator() {
-    return performAnnotation();
+  return performAnnotation();
 }
 
 function performSearch(service, term) {
-    if (service == "bioportal") {
-        return searchBioPortal(term);
-    } else {
-        return searchLOV(term);
-    }
+   if (service == "bioportal") {
+       return searchBioPortal(term);
+   } else {
+       return searchLOV(term);
+   }
 }
 
