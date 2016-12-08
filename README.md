@@ -10,11 +10,11 @@ OntoMaton facilitates ontology search and tagging functionalities within Google 
 <br/>
 
 ### Read the Publication...
-Access the Open Access Bioinformatics article on OntoMaton [here](http://bioinformatics.oxfordjournals.org/content/29/4/525.full)
+Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](http://bioinformatics.oxfordjournals.org/content/29/4/525.full)
 
-Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
+<i>Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
-Bioinformatics 2013 29: 525-527.  
+Bioinformatics 2013 29: 525-527. </i>
 
 Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services and has since been extended to support ontology searches over <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a> too.
 
