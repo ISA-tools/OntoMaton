@@ -16,7 +16,7 @@ Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assun
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
 Bioinformatics 2013 29: 525-527.  
 
-Please, note that at the time of the publication, OntoMaton was powered by the NCBO BioPortal web services and has since been extended to support ontology searches over <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a> too.
+Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services and has since been extended to support ontology searches over <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a> too.
 
 
 ###Installation
