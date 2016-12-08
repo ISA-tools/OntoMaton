@@ -3,7 +3,7 @@
 </div>
 
 <br/>
-<a href="http://dx.doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/5364/ISA-tools/OntoMaton.png"><a>
+<a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
 <br/>
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
@@ -15,6 +15,8 @@ Access the Open Access Bioinformatics article on OntoMaton [here](http://bioinfo
 Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
 Bioinformatics 2013 29: 525-527.  
+
+Please, note that at the time of the publication, OntoMaton was powered by the NCBO BioPortal web services and has since been extended to support ontology searches over <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a> too.
 
 
 ###Installation
