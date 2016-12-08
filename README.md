@@ -27,14 +27,50 @@ For more information, see [our blog posts on OntoMaton](https://isatools.wordpre
 
 ###Installation
 
-With the new add on infrastructure, installation is very easy. Just click on the 'Add on' menu item in your Google Spreadsheet > 'Get add ons' and search for OntoMaton. Then click on 'Install'.
+With the new add on infrastructure, installation is very easy. 
 
-You'll then have the OntoMaton app installed. You can access it through the 'Add On' menu option.
+1. Click on the 'Add-ons' menu item in your Google Spreadsheet:
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-20-02-57.png?w=500">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig1.png" width="500">
 </div>
 
+2.  Click on 'Get add-ons...' and then search for 'OntoMaton': 
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig2.png?" height="200">
+</div>
+
+You should get the following result:
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig3.png" width="500">
+</div>
+
+Here you can click on the image and read more about OntoMaton:
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig4.png" width="500">
+</div>
+
+3. To install, click on '+FREE'. You will need to authorise OntoMaton Add-on to access your spreadsheets and to connect to external services (the ontology search services we support):
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig5.png" width="500">
+</div>
+
+
+4. You'll then have the OntoMaton app installed. 
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig6.png" width="500">
+</div>
+
+You can access it through the 'Add On' menu option.
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig7.png" width="500">
+</div>
 
 ###Ontology Search
 
