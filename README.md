@@ -16,7 +16,13 @@ Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinf
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
 Bioinformatics 2013 29: 525-527. doi: [10.1093/bioinformatics/bts718](dx.doi.org/10.1093/bioinformatics/bts718) </i>
 
-Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services and has since been extended to support ontology searches over <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a> too.
+Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services. Since then, we have made the following extensions:
+
+- we upgraded the code to [Google Add-ons for Docs and Sheets](http://googledrive.blogspot.it/2014/03/add-ons.html), which [deprecated the Apps Script applications and the Script Gallery](http://googleappsdeveloper.blogspot.co.uk/2014/06/deprecating-script-gallery-in-old.html), used in the original OntoMaton version
+- we upgraded to the new BioPortal API for searching ontology terms and annotator services (see BioPortal 4.0 release notes), as the old API was deprecated in 2014
+- we extended the ontology search functionality to support REST services from the <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
+
+For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
 
 ###Installation
