@@ -3,30 +3,74 @@
 </div>
 
 <br/>
-<a href="http://dx.doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/5364/ISA-tools/OntoMaton.png"><a>
+<a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
 <br/>
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
 <br/>
 
 ### Read the Publication...
-Access the Open Access Bioinformatics article on OntoMaton [here](http://bioinformatics.oxfordjournals.org/content/29/4/525.full)
+Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](dx.doi.org/10.1093/bioinformatics/bts718).
 
-Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
+<i>Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
-Bioinformatics 2013 29: 525-527.  
+Bioinformatics 2013 29: 525-527. doi: [10.1093/bioinformatics/bts718](dx.doi.org/10.1093/bioinformatics/bts718) </i>
+
+Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services. Since then, we have made the following extensions:
+
+- we upgraded the code to [Google Add-ons for Docs and Sheets](http://googledrive.blogspot.it/2014/03/add-ons.html), which [deprecated the Apps Script applications and the Script Gallery](http://googleappsdeveloper.blogspot.co.uk/2014/06/deprecating-script-gallery-in-old.html), used in the original OntoMaton version
+- we upgraded to the new BioPortal API for searching ontology terms and annotator services (see BioPortal 4.0 release notes), as the old API was deprecated in 2014
+- we extended the ontology search functionality to support REST services from the <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
+
+For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
 
 ###Installation
 
-With the new add on infrastructure, installation is very easy. Just click on the 'Add on' menu item in your Google Spreadsheet > 'Get add ons' and search for OntoMaton. Then click on 'Install'.
+With the new add on infrastructure, installation is very easy. 
 
-You'll then have the OntoMaton app installed. You can access it through the 'Add On' menu option.
+1. Click on the 'Add-ons' menu item in your Google Spreadsheet:
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-20-02-57.png?w=500">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig1.png" width="500">
 </div>
 
+2.  Click on 'Get add-ons...' and then search for 'OntoMaton': 
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig2.png?" height="200">
+</div>
+
+You should get the following result:
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig3.png" width="500">
+</div>
+
+Here you can click on the image and read more about OntoMaton:
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig4.png" width="500">
+</div>
+
+3. To install, click on '+FREE'. You will need to authorise OntoMaton Add-on to access your spreadsheets and to connect to external services (the ontology search services we support):
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig5.png" width="500">
+</div>
+
+
+4. You'll then have the OntoMaton app installed. 
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig6.png" width="500">
+</div>
+
+You can access it through the 'Add On' menu option.
+
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig7.png" width="500">
+</div>
 
 ###Ontology Search
 

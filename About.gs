@@ -24,7 +24,7 @@
 // Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2012 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2015 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
@@ -35,23 +35,23 @@ function showAbout() {
     var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
     var app = UiApp.createApplication().setHeight(500);
-
+  
     var absolutePanel = app.createAbsolutePanel();
     absolutePanel.setSize(480, 450);
-
+    
     absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton.png"),35,0);
     absolutePanel.add(createLabel(app,"version 3.0", "sans-serif", "normal", "12px", "#81A32B"), 345, 90);
-
+  
     absolutePanel.add(createLabel(app, "OntoMaton makes use of the NCBO BioPortal Web Services and Linked Open Vocabularies services to facilitate ontology lookup and tagging within Google Spreadsheets.",
-        "sans-serif", "lighter", "14px", "#939598"), 15, 170);
-
+                                 "sans-serif", "lighter", "14px", "#939598"), 15, 170);
+    
     absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/part_of_isatools.png"), 200, 230);
-
+  
     absolutePanel.add(createLabel(app, "OntoMaton was developed by the ISA team (http://www.isa-tools.org) at the University of Oxford to aid users in the use of ontologies in their day to day work.",
-        "sans-serif", "lighter", "14px", "#939598"), 15, 345);
-
+                                      "sans-serif", "lighter", "14px", "#939598"), 15, 345);
+      
     absolutePanel.add(createLabel(app, "For more information see the publication in Bioinformatics: http://bioinformatics.oxfordjournals.org/content/29/4/525",
-        "sans-serif", "lighter", "14px", "#939598"), 15, 390);
+                                      "sans-serif", "lighter", "14px", "#939598"), 15, 390);
     app.add(absolutePanel);
     mydoc.show(app);
 }
