@@ -74,10 +74,10 @@ You can access it through the 'Add On' menu option.
 
 ###Ontology Search
 
-From OntoMaton, you can search both the NCBO Bioportal and Linked Open Vocabulary resources within one tool and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
+From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](http://lov.okfn.org) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-51-20.png?h=500" align="center"/>
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig8.png" width="500">
 </div>
 
 ###Ontology Tagging
