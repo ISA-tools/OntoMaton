@@ -74,10 +74,10 @@ You can access it through the 'Add On' menu option.
 
 ###Ontology Search
 
-From OntoMaton, you can search both the NCBO Bioportal and Linked Open Vocabulary resources within one tool and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
+From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](http://lov.okfn.org) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-18-51-20.png?h=500" align="center"/>
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig8.png" width="700">
 </div>
 
 ###Ontology Tagging
@@ -92,15 +92,13 @@ With OntoMaton, you can select a number of spreadsheet cells and then 'tag' them
 
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-19-44-14.png?h=400"/>
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig9.png" width="500">
 </div>
-
-
 
 From the settings screen, you can configure:
 
-* How terms should be inserted in to the spreadsheet when not in 'ISA mode' (where the next columns aren't named Term Source Ref or Term Source Accession). The two options are as either as a hyperlink to the term in Bioportal/LOV or as a term name with the hyperlink in parentheses.  
-* Restrictions, which specify for zero or more columns (with a name in the first cell), restrictions that should be placed on the search space. E.g. Label is restriction to the chemical entities ontology (ChEBI).
+* How terms should be inserted in to the spreadsheet when not in 'ISA mode' (where the next columns aren't named 'Term Source REF' or 'Term Source Accession'). The two options are as either as a hyperlink to the term in Bioportal/OLS/LOV or as a term name with the hyperlink in parentheses.  
+* Restrictions, which specify for zero or more columns (with a name in the first cell), restrictions that should be placed on the search space per each of the ontology lookup services we use (Bioportal/OLS/LOV) E.g. the column 'Label' is restricted to terms from the Chemincal Entities of Biomedical Interest ontology (ChEBI). Please, note that for instance if a column has a restriction over the BioPortal service, the restiction will not have an effect if searching terms with OLS. 
 
 
 ###Restricting OntoMaton's search space
