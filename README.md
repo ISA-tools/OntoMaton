@@ -104,11 +104,16 @@ From the settings screen, you can configure:
 ###Restricting OntoMaton's search space
 
 <div align="center">
-<img src="https://isatools.files.wordpress.com/2014/04/screen-shot-2014-04-16-at-19-44-53.png?h=500"/>
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig10.png" width="600">
 </div>
 
+<div align="center">
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig13.png" width="600">
+</div>
+
+
 When you add a restriction using the 'Settings' panel for the first time, a 'Restrictions' sheet will be added automatically. This sheet will have the following column headers:
-```Column Name | Ontology |	 Branch | Version```. Then you may define for a particular column header in your spreadsheet what ontology should be searched (or list of ontologies, e.g. 1007, 1023).
+```Column Name | Ontology |	 Branch | Version | Ontology Name | Service```. Then you may define for a particular column header in your spreadsheet what ontology should be searched (or list of ontologies) over what service (BioPortal, OLS or LOV). A restriction will only apply if using the corresponding service for search. 
 
 Additionally, within one ontology restriction, for BioPortal searches, you can restrict to a particular branch of an ontology, providing a way to further restrict the search space.
 
