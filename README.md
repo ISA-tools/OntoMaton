@@ -122,7 +122,7 @@ An example of a google spreadsheet with such functionality can be viewed here: h
  
 ### Video Tutorial
 
-Access the video tutorial showing how to install and use OntoMaton [here](http://www.youtube.com/watch?v=Qs0nxGBfQac&feature=player_embedded).
+Access the video tutorial showing how to install and use OntoMaton (version 1) [here](http://www.youtube.com/watch?v=Qs0nxGBfQac&feature=player_embedded).
  
 ### Templates
 
@@ -130,7 +130,7 @@ Templates can be found through accessing them on the google templates site. Onto
 
 ###Questions
 
-If you have any queries, please email us at [link](mailto:isatools@googlegroups.com). For bug reports, please use the issue page here.
+If you have any queries, please email us at [link](mailto:isatools@googlegroups.com). For bug reports, please [use the issue page here](https://github.com/ISA-tools/OntoMaton/issues).
 
 ###License
 
