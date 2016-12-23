@@ -18,206 +18,371 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com 
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2012 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2015 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
+// constants
+var OLS_API_BASE_URI = "http://www.ebi.ac.uk/ols/api";
+var OLS_PAGINATION_SIZE = 500; // MAX pagination size
 
-function searchBioPortal(term) {
-    try {       
-        var ontologies = getBioPortalOntologies();
-        // only perform a search if there is a difference
-        var restriction = findRestrictionForCurrentColumn();
-
-        if (term.length > 2) {
-            // todo check if particular column has a restriction in the hidden sheet. If so, restrict the search.
-            var searchString = "http://data.bioontology.org/search?q=" + term + "&display_context=false";
-
-            if (restriction) {
-                if (restriction.branch)
-                    searchString += "&ontology=" + restriction.ontologyId + "&subtree=" + restriction.branch + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
-                else
-                    searchString += "&ontologies=" + restriction.ontologyId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
-            }
-          
-            Logger.log("searchString==>"+searchString);
-
-            // we cache results and try to retrieve them on every new execution.
-            var cacheResult = fetchFromCache(searchString);
-          
-            Logger.log("cacheResult==> "+cacheResult);
-          
-            var text;
-            if (cacheResult != undefined) {
-                return JSON.parse(cacheResult);
-                // SpreadsheetApp.getActiveSpreadsheet().toast("Terms retrieved from cache.", "Cache accessed", -1);
-            } else {
-                text = UrlFetchApp.fetch(searchString).getContentText();
-                var doc = JSON.parse(text);
-                var searchResultBeans = doc.collection;
-                var ontologyDictionary = {};
-
-                for (var resultIndex in searchResultBeans) {
-                    var result = searchResultBeans[resultIndex];
-                    var ontologyLabel = result.links.ontology.substring(result.links.ontology.lastIndexOf("/") + 1);
-
-                    if (ontologyDictionary[ontologyLabel] == undefined) {
-                        ontologyDictionary[ontologyLabel] = {"ontology-name": ontologies[ontologyLabel].name, "terms": []};
-                    }
-
-                    var ontology_record = {"label": result.prefLabel, "id": result["@id"], "ontology-label": ontologyLabel, "ontology-name": ontologies[ontologyLabel].name, "accession": result.links.self, "ontology": result.links.ontology, "url": result.links.ui};
-                    var ontology_record_string = JSON.stringify(ontology_record);
-                    
-                    storeInCache(result["@id"], ontology_record_string);
-                    ontologyDictionary[ontologyLabel].terms.push(ontology_record);
-                }
-              
-                ontologyDictionary.sortedOntologies = sortDictAndReturnSortedKeys(ontologyDictionary);
-                storeInCache(searchString, JSON.stringify(ontologyDictionary));
-              
-                return ontologyDictionary;
-            }
-        } else {
-            throw 'Please enter a term with 3 or more characters.';
-        }
-    } catch (e) {
-        throw e;
-    }
-
-    return {};
+/**
+ * @description serializes an object to a queryString
+ */
+function jsonToQueryString(json) {
+    return Object.keys(json).map(function(key) {
+      var value = json[key] == null ? '' : Array.isArray(json[key]) ? json[key].join() : json[key];
+      return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+    }).join('&');
 }
 
-function searchLOV(term) {
 
-    try {
-        // only perform a search if there is a difference
-        var restriction = findRestrictionForCurrentColumn();
-        var vocabularies = getLinkedOpenVocabularies();
-
-        var url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term;
-        var vocabShortname;
-        var vocabURI;
-        if (restriction.source != "") {
-            vocabShortname = restriction.ontologyId.replace(/\s/g, "");  //string trim
-            if (vocabularies[vocabShortname]) {
-                vocabURI = vocabularies[vocabShortname].uri;
-                if (vocabURI)
-                    url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term + "&voc=" + vocabURI;
-            } else {
-                url = "";
-            }
-        }
-
-        if (url != "") {
-
-            // we cache results and try to retrieve them on every new execution.
-            var cacheResult = fetchFromCache(url);
-
-            var text;
-            
-            if (cacheResult != null) {
-                text = cacheResult;
-            } else {
-                text = UrlFetchApp.fetch(url).getContentText();
-            }
-
-            Logger.log(text);
-
-            var ontologyDictionary = {};
-
-            var parsed_result = JSON.parse(text);
-            if (!parsed_result.error) {
-
-                var results = parsed_result.results;
-
-                for (var i in results) {
-
-                    var uriPrefixed = results[i]['prefixedName'][0];
-                    var uri = results[i].uri[0];
-                    var vocabularyPrefix = results[i]['vocabulary.prefix'][0];
-
-                    if (vocabularyPrefix != null) {
-
-                        var vocab_record = vocabularies[vocabularyPrefix];
-
-                        var ontologyLabel = vocab_record.name + "\n (" + vocab_record.uri + ")";
-
-                        if (ontologyDictionary[ontologyLabel] == undefined) {
-                            ontologyDictionary[ontologyLabel] = {"ontology-name": vocab_record.name, "terms": []};
-                        }
-
-                        var ontology_record = {"label": uriPrefixed, "id": uri, "ontology-label": vocabularyPrefix, "ontology-name": vocab_record.name, "accession": vocab_record.uri, "ontology": vocab_record.uri, "details": "", "url":uri};
-                        var ontology_record_string = JSON.stringify(ontology_record);
-                        storeInCache(uri, ontology_record_string);
-                        ontologyDictionary[ontologyLabel].terms.push(ontology_record);
-
-                    } //vocabularyPrefix not null
-
-                }//for
-                storeInCache(url, JSON.stringify(text));
-                ontologyDictionary.sortedOntologies = sortDictAndReturnSortedKeys(ontologyDictionary);
-                return ontologyDictionary;
-            }// not error   
-        }
-    } catch (e) {
-        Logger.log(e);
-        throw e;
-    }
-  
-    return {};
-}
-
-function handleTermInsertion(term_id) {
+function getSourceAndAccessionPositionsForTerm(column) {
+    // we will look at positions 1 & 2 after the column to determine if the source and accession columns
+    // particular to ISAtab are present.
     var sheet = SpreadsheetApp.getActiveSheet();
-    var selectedRange = sheet.getActiveSelection();  
-  
-    var term = JSON.parse(fetchFromCache(term_id));
-    var ontologyObject = {
-        "term": term["label"],
-        "accession": term_id,
-        "ontologyId": term["ontology-label"],
-        "ontologyVersion": term["ontology"],
-        "ontologyDescription": term["ontology-name"],
-        "url": term["url"]
+    var sourceObject = new Object();
+
+    for (var columnIndex = column + 1; columnIndex <= column + 2; columnIndex++) {
+        if (sheet.getRange(1, columnIndex).getValue() == "Term Source REF") {
+            sourceObject.sourceRef = columnIndex;
+        }
+        if (sheet.getRange(1, columnIndex).getValue() == "Term Accession Number") {
+            sourceObject.accession = columnIndex;
+        }
     }
 
-    // figure out where the source ref and accession columns exist, if they do exist at all. Insertion technique will vary
-    // depending on the file being looked at.
-    var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
-    // add all terms into a separate sheet with all their information.
+    return sourceObject;
+}
 
-    if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
-        insertOntologySourceInformationInInvestigationBlock(ontologyObject);
+function createOntologyObjectFromString(ontologyString) {
+    // processes the ontology string into an ontology object to be used for population of ISA sections.
+    var ontologyDetails = ontologyString.split("::");
+    var ontologyObject = new Object();
+    // BioPortal -> cy5::http://purl.obolibrary.org/obo/CHEBI_37989::1123::47203::Ontology for Biomedical Investigations
+    // LOV ->   swpo:hasStreetAddress::http://sw-portal.deri.org/ontologies/swportal#hasStreetAddress
+    ontologyObject.term = ontologyDetails[0];
+    ontologyObject.accession = ontologyDetails[1];
+    ontologyObject.ontologyId = ontologyDetails[2];
+    ontologyObject.conceptId = ontologyDetails[3];
+    ontologyObject.ontologyVersion = ontologyDetails[4];
+    ontologyObject.ontologyDescription = ontologyDetails[5];
+    // we will have an additional freeText variable from the auto tagger value
+    if (ontologyDetails.length > 5) {
+        ontologyObject.freeText = ontologyDetails[6];
     }
 
-    for (var row = selectedRange.getRow(); row <= selectedRange.getLastRow(); row++) {
+    return ontologyObject;
+}
 
-        // if the currently selected column is an ISA defined ontology term, then we should insert the source and accession in subsequent
-        // columns and add the ontology source information to the investigation file if it doesn't already exist.
-        if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
-            sheet.getRange(row, selectedRange.getColumn()).setValue(ontologyObject.term);
-            sheet.getRange(row, sourceAndAccessionPositions.sourceRef).setValue(ontologyObject.ontologyId);
-            sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.accession);
-        } else {
+function insertOntologySourceInformationInInvestigationBlock(ontologyObject) {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheets = ss.getSheets();
 
-            var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
-            var selectedColumn = selectedRange.getColumn();
-            var nextColumn = selectedColumn + 1;
-            if (!isDefaultInsertionMechanism) {
-                sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
-                sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
-            } else {
-                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '","' + ontologyObject.term + '")')
+    var investigationSheet;
+    var ontologySectionStartIndex;
+
+
+    // find investigation file
+    for (var sheet in sheets) {
+        if (sheets[sheet].getName().indexOf("i_") > -1) {
+            // we've now got the investigation file.
+            // insert the ontology source information if it doesn't already exist here.
+            investigationSheet = sheets[sheet];
+            break;
+        }
+    }
+
+    // find section we're looking for.
+    if (investigationSheet != undefined) {
+        // we need to find the section, which should always be at position 1 in the investigation file.
+        // However, we should be careful and allow for automated discovery of the location.
+        for (var row = 1; row <= investigationSheet.getLastRow(); row++) {
+            if (investigationSheet.getRange(row, 1).getValue() == "ONTOLOGY SOURCE REFERENCE") {
+                ontologySectionStartIndex = row;
+                break;
             }
         }
     }
-    insertTermInformationInTermSheet(ontologyObject);
+
+    if (ontologySectionStartIndex != undefined) {
+        // now we can proceed to adding the information about the ontology source, if it doesn't already exist.
+
+        var locationInformation = getIndexesToInsertInto(investigationSheet, ontologySectionStartIndex, ontologyObject.ontologyId);
+
+        investigationSheet.getRange(locationInformation.sourceName, locationInformation.insertionPoint).setValue(ontologyObject.ontologyId);
+        investigationSheet.getRange(locationInformation.sourceFile, locationInformation.insertionPoint).setValue("");
+        investigationSheet.getRange(locationInformation.sourceVersion, locationInformation.insertionPoint).setValue(ontologyObject.ontologyVersion);
+        investigationSheet.getRange(locationInformation.sourceDescription, locationInformation.insertionPoint).setValue(ontologyObject.ontologyDescription);
+    }
+
+
+}
+
+function getIndexesToInsertInto(sheet, ontologySectionIndex, sourceName) {
+    // will find either the place where this source name currently resides (to update it) or the place to insert all other terms.
+    var locationInformation = new Object();
+    // default.
+    locationInformation.insertionPoint = 2;
+    sheet.insertColumns(sheet.getLastColumn(), 1);
+
+    for (var rowIndex = ontologySectionIndex + 1; rowIndex <= ontologySectionIndex + 4; rowIndex++) {
+        var value = sheet.getRange(rowIndex, 1).getValue();
+        if (value == "Term Source Name") {
+            locationInformation.sourceName = rowIndex;
+            for (var columnIndex = 2; columnIndex <= sheet.getMaxColumns(); columnIndex++) {
+                // if the value is empty, or equals the current source name, then add it.
+                if (sheet.getRange(rowIndex, columnIndex).getValue() == "" || sheet.getRange(rowIndex, columnIndex).getValue() == sourceName) {
+                    locationInformation.insertionPoint = columnIndex;
+                    break;
+                }
+            }
+        } else if (value == "Term Source File") {
+            locationInformation.sourceFile = rowIndex;
+        } else if (value == "Term Source Version") {
+            locationInformation.sourceVersion = rowIndex;
+        } else if (value == "Term Source Description") {
+            locationInformation.sourceDescription = rowIndex;
+        }
+    }
+
+    return locationInformation;
+}
+
+function insertTermInformationInTermSheet(ontologyObject) {
+    var previousSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var activeRange = previousSheet.getActiveRange();
+    var termSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Terms");
+
+    if(termSheet == undefined) {
+        termSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Terms");
+        SpreadsheetApp.getActiveSpreadsheet().toast("The Term sheet is used to maintain information about all the ontologies you have entered.",
+                                                    "Term Sheet Added Automatically", -1);
+
+        termSheet.getRange(1, 1).setValue("Term Name");
+        termSheet.getRange(1, 2).setValue("Term URI");
+        termSheet.getRange(1, 3).setValue("Ontology Source");
+        termSheet.getRange(1, 4).setValue("Ontology URI");
+        termSheet.getRange(1, 5).setValue("Ontology Full Name");
+
+        // Go back to the previous sheet...
+        SpreadsheetApp.setActiveSheet(previousSheet)
+        SpreadsheetApp.getActiveSheet().setActiveRange(activeRange);
+    }
+
+    if(termSheet != undefined) {
+        // we have a term sheet, so we can enter information about the term here.
+        var insertionRow = findNextBlankRow(termSheet);
+        termSheet.getRange(insertionRow, 1).setValue(ontologyObject.term);
+        termSheet.getRange(insertionRow, 2).setValue(ontologyObject.url);
+        termSheet.getRange(insertionRow, 3).setValue(ontologyObject.ontologyId);
+        termSheet.getRange(insertionRow, 4).setValue(ontologyObject.ontologyVersion);
+        termSheet.getRange(insertionRow, 5).setValue(ontologyObject.ontologyDescription);
+    }
+}
+
+
+
+function findNextBlankRow(sheet) {
+  return sheet.getLastRow()+1;
+}
+
+function findRestrictionForCurrentColumn(service) {
+  var restriction = new Object();
+  restriction.ontologyId = "";
+  restriction.source = "";
+  restriction.branch = "";
+  restriction.version = "";
+
+  try {
+
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
+
+    var activeSheet = SpreadsheetApp.getActiveSheet();
+    var selectedRange = activeSheet.getActiveSelection();
+
+    var columnName = activeSheet.getRange(1, selectedRange.getColumn()).getValue();
+    var transposedColumnName = activeSheet.getRange(selectedRange.getRow(), 1).getValue();
+
+
+    if (restrictionSheet != undefined) {
+
+      for (var row = 1; row <= restrictionSheet.getLastRow(); row++) {
+
+              var restrictionColumn = restrictionSheet.getRange(row, 1).getValue();
+              var serviceColumn = restrictionSheet.getRange(row, 6).getValue();
+
+              if (restrictionColumn == columnName && serviceColumn == service) {
+                    restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
+                    restriction.branch = restrictionSheet.getRange(row, 3).getValue();
+                    restriction.version = restrictionSheet.getRange(row, 4).getValue();
+                    restriction.service = restrictionSheet.getRange(row, 6).getValue();
+                    return restriction;
+                }
+
+              if(restrictionColumn == transposedColumnName && serviceColumn == service) {
+                    restriction.ontologyId = restrictionSheet.getRange(row, 2).getValue();
+                    restriction.branch = restrictionSheet.getRange(row, 3).getValue();
+                    restriction.version = restrictionSheet.getRange(row, 4).getValue();
+                    restriction.service = restrictionSheet.getRange(row, 6).getValue();
+                    return restriction;
+              }
+    }
+  }
+
+} catch(e) {
+  throw e;
+} finally {
+  return restriction;
+}
+}
+
+
+function fetchFromCache(searchString) {
+  var cache = CacheService.getPrivateCache();
+  var cachedContent = cache.get(searchString);
+  if (cachedContent != null) {
+    return cachedContent;
+  }
+}
+
+function storeInCache(searchString, content) {
+  try {
+  var cache = CacheService.getPrivateCache();
+  cache.put(searchString, content, 1500); // caches result for 25 minutes
+  } catch(e) {
+
+  }
+}
+
+function createLabel(app, text, fontfamily, fontweight, fontsize, color) {
+     var label = app.createLabel(text);
+     label.setStyleAttribute("font-family", fontfamily).setStyleAttribute("font-weight", fontweight)
+       .setStyleAttribute("font-size", fontsize).setStyleAttribute("color", color);
+     return label;
+}
+
+function sortDictAndReturnSortedKeys(dict) {
+  var sorted = [];
+    for(var key in dict) {
+        sorted.push(key);
+    }
+    return sorted.sort();
+}
+
+function sortOnKeys(dict) {
+
+    var sorted = [];
+    for(var key in dict) {
+        sorted[sorted.length] = key;
+    }
+    sorted.sort();
+
+    var tempDict = {};
+    for(var i = 0; i < sorted.length; i++) {
+        tempDict[sorted[i]] = dict[sorted[i]];
+    }
+
+    return tempDict;
+}
+
+function itemDefinitionHandler(e) {
+    var app = UiApp.getActiveApplication();
+    var value = e.parameter.source;
+
+    var term = value.substring(0,value.indexOf("::"));
+    var definition = value.substring(value.lastIndexOf("::") + 2);
+
+    SpreadsheetApp.getActiveSpreadsheet().toast("Definition: " + definition, term, -1);
+
+    return app;
+}
+
+
+function itemDefinitionHandlerLOV(e) {
+
+    var app = UiApp.getActiveApplication();
+    var value = e.parameter.source;
+
+    var term = value.substring(0,value.indexOf("::"));
+    var definition = value.substring(value.lastIndexOf("::") + 2);
+
+    if(definition == "") {
+      definition = "No definition available for this term.";
+    }
+
+    SpreadsheetApp.getActiveSpreadsheet().toast(definition, term, -1);
+
+    return app;
+}
+
+/**
+   The cache items have a limited size. This method splits up large
+   results and can put them back together again
+
+   cache is an instance of CacheService
+   cache key will be something like lov or bioportal
+   toStore is the text to keep
+**/
+function splitResultAndCache(cache, cacheKey, toStore) {
+  var fragments = 1;
+  var value_length = 10000;
+  // two hour expiration time.
+  var expiration_time_secs = 7200;
+  if(toStore.length > value_length) {
+    fragments = Math.floor(toStore.length/value_length + (toStore.length%value_length > 0 ? 1 : 0));
+  }
+
+  var fragmentCount = 0;
+  while(fragmentCount < fragments) {
+    var string_fragment = toStore.substring(fragmentCount * value_length, (fragmentCount + 1) *value_length);
+    cache.put(cacheKey + "_" + fragmentCount, string_fragment, value_length);
+    fragmentCount++;
+  }
+
+  cache.put(cacheKey + "_fragments", fragmentCount, expiration_time_secs);
+}
+
+
+function getCacheResultAndMerge(cache, cacheKey) {
+    var fragments = cache.get(cacheKey + "_fragments");
+    Logger.log(fragments);
+    var fullResult = "";
+    var fragmentCount = 0;
+    while(fragmentCount < fragments) {
+       fullResult += cache.get(cacheKey + "_" + fragmentCount);
+       fragmentCount++;
+    }
+
+    return fullResult;
+}
+
+function getTextFromHtml(html) {
+  return getTextFromNode(Xml.parse(html, true).getElement());
+}
+
+function getTextFromNode(x) {
+  switch(x.toString()) {
+    case 'XmlText': return x.toXmlString();
+    case 'XmlElement': return x.getNodes().map(getTextFromNode).join('');
+    default: return '';
+  }
+}
+
+function replaceControlCharacters(text) {
+  try {
+    var escaped_string = text.replace(/\\n/g, "\\n");
+    return escaped_string;
+  } catch (e){
+    return text;
+  }
 }

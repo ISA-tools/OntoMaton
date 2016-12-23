@@ -1,3 +1,37 @@
+<!--
+// OntoMaton is a component of the ISA software suite (http://www.isa-tools.org)
+//
+// License:
+// OntoMaton is licensed under the Common Public Attribution License version 1.0 (CPAL)
+//
+// EXHIBIT A. CPAL version 1.0
+// “The contents of this file are subject to the CPAL version 1.0 (the “License”);
+// you may not use this file except in compliance with the License. You may obtain a
+// copy of the License at http://isatab.sf.net/licenses/OntoMaton-license.html.
+// The License is based on the Mozilla Public License version 1.1 but Sections
+// 14 and 15 have been added to cover use of software over a computer network and
+// provide for limited attribution for the Original Developer. In addition, Exhibit
+// A has been modified to be consistent with Exhibit B.
+//
+// Software distributed under the License is distributed on an “AS IS” basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+// the specific language governing rights and limitations under the License.
+//
+// The Original Code is OntoMaton.
+// The Original Developer is the Initial Developer. The Initial Developer of the
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// http://www.isa-tools.org). All portions of the code written by the ISA Team are
+// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+//
+// EXHIBIT B. Attribution Information
+// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Phrase: Developed by the ISA Team
+// Attribution URL: http://www.isa-tools.org
+// Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
+// Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+-->
+
 <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
 <!-- The CSS package above applies Google styling to buttons and other elements. -->
 <style>
@@ -5,6 +39,10 @@
 .branding-above {
     padding: 0;
     top: 0;
+}
+
+.sidebar {
+    width: 94%;
 }
 
 .hidden {
@@ -27,7 +65,6 @@
 
 .ontomaton-header{
     padding-top: 5px;
-    background: #f6f7f6;
     height: 75px;
 }
 
@@ -73,7 +110,7 @@ float:right;
 
 .search-results ul {
 list-style:none;
-margin-left: -30px;
+margin-left: 0px;
 text-align: left;
 }
 
@@ -89,7 +126,7 @@ width: 24%;
 }
 
 .search-results ul li{
-width:95%;
+width:85%;
 padding: 4px;
 font-weight: bolder;
 padding-top: 2px;
@@ -145,38 +182,43 @@ ul {
 </div>
   <form>
     <div class="block col-contain" style="margin-top:20px">
-      
+
       <div class="col-two">
         <div id="ontomaton-search-panel">
           <label for="radio-origin-auto" style="font-size: .9em; color: #414241">Search Term</label>
           <input type="text" name="search-text" style="background-color:#f6f7f6; border:none" id="search-text" value="">
         </div>
-     <br/>   
-     
+     <br/>
+
      <div class="col-one service-selection">
           <input type="radio" name="service" id="radio-origin-auto" value="bioportal" checked="checked">
           <label for="radio-service-bioportal">Search BioPortal</label>
      </div>
-     
+
      <div class="service-selection">
           <input type="radio" name="service" id="radio-origin-en" value="lov">
-          <label for="radio-service-lov">Search LOV</label>        
+          <label for="radio-service-lov">Search LOV</label>
       </div>
-      
+
+      <div class="service-selection">
+          <input type="radio" name="service" id="radio-origin-en" value="ols">
+          <label for="radio-service-lov">Search OLS</label>
+      </div>
+
     </div>
     </div>
 
    <div class="block" id="button-bar">
       <button class="" id="run-search">Search</button>
     </div>
-    
+
     <div id="search-results" class="block form-group search-results" style="height:390px; overflow: scroll; border-top: 1px solid #ccc; padding-top: 10px">
     </div>
 
   </form>
 </div>
 
- 
+
 
 <div class="sidebar bottom">
   <img alt="Add-on logo" class="logo"
@@ -188,23 +230,23 @@ ul {
 
 <script>
 
-  
-  
 
-  
+
+
+
  // tryResize();
-  
+
   //function tryResize() {
     //var height = $(window).height();
 //    console.log("Height is " + height);
   //  $("#search-results").height(height/2);
-    
+
   //}
-  
+
   //window.onresize = function() {
     // tryResize();
   //}
-  
+
   /**
    * On document load, assign click handlers to each button and try to load the
    * user's origin and destination language preferences if previously set.
@@ -212,7 +254,7 @@ ul {
   $(function() {
     $('#run-search').click(runSearch);
   });
-  
+
   /**
   * Taken from http://www.mustbebuilt.co.uk/2012/04/20/replaceall-function-for-javascript-and-actionscript/
   */
@@ -224,22 +266,24 @@ ul {
        var myPattern=new RegExp(removeStr,cs);
        return oldStr.replace(myPattern,replaceStr);
   }
-  
+
   /**
    * Inserts the term in to the spreadsheet.
    */
   function insertTerm(term_id) {
+       console.log(term_id);
        google.script.run
         .withSuccessHandler(
           function(result, element) {
-              
+              console.log("success")
           }).withFailureHandler(
           function(msg, element) {
+            console.log("failure")
             showError(msg, $('#button-bar'));
             element.disabled = false;
           })
         .withUserObject(this)
-        .handleTermInsertion(term_id)
+        .handleTermInsertion(term_id);
   }
 
   /**
@@ -248,52 +292,48 @@ ul {
    */
   function runSearch() {
     this.disabled = true;
-    $('#search-results').html('<div id="spinner"><img src="http://l4.yimg.com/dh/ap/default/130116/spinner_white_working.gif"/></div>');
+    $('#search-results').html('<div id="spinner"><img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="60%"/></div>');
     $('#error').remove();
     var service = $('input[name=service]:checked').val();
     var term = $('input[name=search-text]').val();
-    
+
     google.script.run
         .withSuccessHandler(
           function(result, element) {
             // process results
-            
+
             var html='<div id="accordion" class="accordion">';
-            
+
             if(result.sortedOntologies){
             for(var ontology_key_index in result.sortedOntologies) {
                 var ontology_key = result.sortedOntologies[ontology_key_index];
-                
+
                 html += '<h3><span class="ontology-abbr">' + ontology_key + '</span> - <span class="ontology-name">' + result[ontology_key]["ontology-name"] + '</span></h3>' +
                 '<div><ul>'
-                
+
                 for(var term_info in result[ontology_key]["terms"]) {
                     var term = result[ontology_key]["terms"][term_info];
                     var label = term["label"];
-                    
+
                     html+= '<li>'+
                     '<div class="term-info">' +
                     '<a href="'+term["url"] + '" target="_blank">' + term["label"] + '</a>' +
                     '</div>' +
-                   '<div class="term-buttons"><button onclick="insertTerm(\'' + term["id"] +  '\')">Insert Term</button></div>' +
+                   '<div class="term-buttons"><button onclick="insertTerm(\'' + term["id"] +  '\'); return false;">Insert Term</button></div>' +
                     '<div class="clearfix"></div>'+
                     '</li>';
                 }
-                
+
                 html +='</ul></div>';
             }
             } else {
                 html += "<p>Sorry, no results were found matching your query...</p>";
             }
-            
 
-            
             html += "</div>";
-            
-            
-            
+
             $('#search-results').html(html);
-            
+
             element.disabled = false;
             $('#spinner').addClass("hidden");
           })
@@ -305,6 +345,7 @@ ul {
           })
         .withUserObject(this)
         .runSearch(service, term);
+     return false;
   }
 
   /**

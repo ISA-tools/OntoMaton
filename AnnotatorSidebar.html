@@ -1,3 +1,37 @@
+<!--
+// OntoMaton is a component of the ISA software suite (http://www.isa-tools.org)
+//
+// License:
+// OntoMaton is licensed under the Common Public Attribution License version 1.0 (CPAL)
+//
+// EXHIBIT A. CPAL version 1.0
+// “The contents of this file are subject to the CPAL version 1.0 (the “License”);
+// you may not use this file except in compliance with the License. You may obtain a
+// copy of the License at http://isatab.sf.net/licenses/OntoMaton-license.html.
+// The License is based on the Mozilla Public License version 1.1 but Sections
+// 14 and 15 have been added to cover use of software over a computer network and
+// provide for limited attribution for the Original Developer. In addition, Exhibit
+// A has been modified to be consistent with Exhibit B.
+//
+// Software distributed under the License is distributed on an “AS IS” basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+// the specific language governing rights and limitations under the License.
+//
+// The Original Code is OntoMaton.
+// The Original Developer is the Initial Developer. The Initial Developer of the
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// http://www.isa-tools.org). All portions of the code written by the ISA Team are
+// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+//
+// EXHIBIT B. Attribution Information
+// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Phrase: Developed by the ISA Team
+// Attribution URL: http://www.isa-tools.org
+// Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
+// Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+-->
+
 <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
 <!-- The CSS package above applies Google styling to buttons and other elements. -->
 <style>
@@ -12,6 +46,10 @@
 .branding-above {
     padding: 0;
     top: 0;
+}
+
+.sidebar {
+    width: 94%;
 }
 
 .hidden {
@@ -34,7 +72,6 @@
 
 .ontomaton-header{
     padding-top: 5px;
-    background: #f6f7f6;
     height: 75px;
 }
 
@@ -92,7 +129,7 @@ float:right;
 
 .search-results ul {
 list-style:none;
-margin-left: -30px;
+margin-left: 0px;
 text-align: left;
 }
 
@@ -108,7 +145,7 @@ width: 31%;
 }
 
 .search-results ul li{
-width:95%;
+width:85%;
 padding: 4px;
 font-weight: bolder;
 padding-top: 3px;
@@ -183,7 +220,7 @@ ul {
   $(function() {
     $('#run-annotator').click(runAnnotator);
   });
-  
+
   /**
   * Taken from http://www.mustbebuilt.co.uk/2012/04/20/replaceall-function-for-javascript-and-actionscript/
   */
@@ -195,7 +232,7 @@ ul {
        var myPattern=new RegExp(removeStr,cs);
        return oldStr.replace(myPattern,replaceStr);
   }
-  
+
   /**
    * Inserts the term in to the spreadsheet.
    */
@@ -203,7 +240,7 @@ ul {
        google.script.run
         .withSuccessHandler(
           function(result, element) {
-              
+
           }).withFailureHandler(
           function(msg, element) {
             showError(msg, $('#button-bar'));
@@ -212,12 +249,12 @@ ul {
         .withUserObject(this)
         .replaceTermWithSelectedValue(term_id)
   }
-  
+
   function toggle(id) {
       $("#"+id).toggleClass("hidden");
 
       var isHidden = $("#" + id).hasClass( "hidden" );
-      console.log("Is hidden? " + isHidden); 
+      console.log("Is hidden? " + isHidden);
       $("#expand-icon-" + id).removeClass(isHidden ? "entypo-minus" : "entypo-plus");
       $("#expand-icon-" + id).addClass(isHidden ? "entypo-plus" : "entypo-minus");
   }
@@ -228,7 +265,7 @@ ul {
    */
   function runAnnotator() {
     this.disabled = true;
-    $('#search-results').html('<div id="spinner"><img src="http://l4.yimg.com/dh/ap/default/130116/spinner_white_working.gif"/></div>');
+    $('#search-results').html('<div id="spinner"><img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="60%"/></div>');
     $('#error').remove();
     
     google.script.run
