@@ -3,7 +3,13 @@
 </div>
 
 <br/>
-<a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
+
+
+
+Version 3: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.221457.svg)](https://doi.org/10.5281/zenodo.221457)
+
+
+Version 2: <a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
 <br/>
 OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets. It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
