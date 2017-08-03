@@ -17,22 +17,22 @@ OntoMaton facilitates ontology search and tagging functionalities within Google 
 <br/>
 
 ### Read the Publication...
-Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](dx.doi.org/10.1093/bioinformatics/bts718).
+Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](http://dx.doi.org/10.1093/bioinformatics/bts718).
 
 <i>Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
 OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
-Bioinformatics 2013 29: 525-527. doi: [10.1093/bioinformatics/bts718](dx.doi.org/10.1093/bioinformatics/bts718) </i>
+Bioinformatics 2013 29: 525-527. doi: [10.1093/bioinformatics/bts718](http://dx.doi.org/10.1093/bioinformatics/bts718)</i>
 
 Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services. Since then, we have made the following extensions:
 
 - we upgraded the code to [Google Add-ons for Docs and Sheets](http://googledrive.blogspot.it/2014/03/add-ons.html), which [deprecated the Apps Script applications and the Script Gallery](http://googleappsdeveloper.blogspot.co.uk/2014/06/deprecating-script-gallery-in-old.html), used in the original OntoMaton version
 - we upgraded to the new BioPortal API for searching ontology terms and annotator services (see BioPortal 4.0 release notes), as the old API was deprecated in 2014
-- we extended the ontology search functionality to support REST services from the <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="http://ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
+- we extended the ontology search functionality to support REST services from the <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="https://www.ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
 
 For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
 
-###Installation
+### Installation
 
 With the new add on infrastructure, installation is very easy. 
 
@@ -79,7 +79,7 @@ You can access it through the 'Add On' menu option.
 <img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig7.png" width="500">
 </div>
 
-###Ontology Search
+### Ontology Search
 
 From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](http://lov.okfn.org) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
 
@@ -87,7 +87,7 @@ From OntoMaton, you can search three different services within one tool: the [NC
 <img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig8.png" width="700">
 </div>
 
-###Ontology Tagging
+### Ontology Tagging
 
 With OntoMaton, you can select a number of spreadsheet cells and then 'tag' them. This means that OntoMaton will take the terms in the cells and send them to BioPortal's Annotator service. The results will come back as a list of the free text terms, showing for each all matches in BioPortal. 
 
@@ -108,7 +108,7 @@ From the settings screen, you can configure:
 * Restrictions, which specify for zero or more columns (with a name in the first cell), restrictions that should be placed on the search space per each of the ontology lookup services we use (Bioportal/OLS/LOV) E.g. the column 'Label' is restricted to terms from the Chemincal Entities of Biomedical Interest ontology (ChEBI). Please, note that for instance if a column has a restriction over the BioPortal service, the restiction will not have an effect if searching terms with OLS. 
 
 
-###Restricting OntoMaton's search space
+### Restricting OntoMaton's search space
 
 <div align="center">
 <img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig10.png" width="600">
@@ -135,19 +135,17 @@ Access the video tutorial showing how to install and use OntoMaton (version 1) [
 
 Templates can be found through accessing them on the google templates site. OntoMaton templates are [here](https://drive.google.com/templates?type=spreadsheets&q=ontomaton).
 
-###Questions
+### Questions
 
 If you have any queries, please email us at [link](mailto:isatools@googlegroups.com). For bug reports, please [use the issue page here](https://github.com/ISA-tools/OntoMaton/issues).
 
-###License
+### License
 
 This work is licensed through a [CPAL license](http://isatab.sf.net/licenses/OntoMaton-license.html), meaning that any derivitives should carry a powered by OntoMaton logo, shown here.
 
 ![image](http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png)
 
 ### Merchandise
-
-![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?color=Black&amp;height=250&amp;width=250) ![image](http://i1.cpcache.com/product/741842417/tshirt.jpg?side=Back&color=Black&height=250&width=250) 
 
 Fancy an OntoMaton t-shirt? We haven't got any to give away...yet! But...you can buy one of these rather snazzy t-shirts from [Spreadshirts](http://antarctic-design.spreadshirt.co.uk/men-s-classic-t-shirt-A22910590/customize/color/2) for just £15!
 
