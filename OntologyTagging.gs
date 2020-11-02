@@ -18,24 +18,37 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2020 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2020 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
+function showAnnotator() {
+    var html = HtmlService.createHtmlOutputFromFile('Annotator-Template')
+      .setTitle('OntoMaton - Ontology Search & Tagging')
+      .setWidth(300);
+  
+    SpreadsheetApp.getUi()
+      .showSidebar(html);
+}
 
+function runAnnotator() {
+  return performAnnotation();
+}
 
 function performAnnotation() {
     try {
         var sheet = SpreadsheetApp.getActiveSheet();
         var selectedRange = SpreadsheetApp.getActiveRange();
+        
+        var restriction = findRestrictionForCurrentColumn("BioPortal");
 
         var valuesToSend = {};
         for (var rowIndex = selectedRange.getRow(); rowIndex <= selectedRange.getLastRow(); rowIndex++) {
@@ -54,8 +67,8 @@ function performAnnotation() {
             valuesToSend[valueToTag].from = valuesToTag.indexOf(valueToTag);
             valuesToSend[valueToTag].to = valuesToSend[valueToTag].from + valueToTag.length;
         }
-
-        if (valuesToTag != "") {
+        
+        if (valuesToTag.trim() != "") {
             var payload =
             {
                 "apikey": "fd88ee35-6995-475d-b15a-85f1b9dd7a42",
@@ -64,6 +77,10 @@ function performAnnotation() {
                 "include": "prefLabel",
                 "text": valuesToTag
             };
+            
+            if (restriction) {
+                payload["ontologies"] = restriction.ontologyId;
+            }
 
             var options =
             {
@@ -160,7 +177,7 @@ function replaceTermWithSelectedValue(term_id) {
                     sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.accession);
                 } else {
 
-            var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
+            var isDefaultInsertionMechanism = loadPreferences();
             var selectedColumn = selectedRange.getColumn();
             var nextColumn = selectedColumn +1;
             if(!isDefaultInsertionMechanism) {

@@ -18,72 +18,26 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2020 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2020 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
-/**
- * Creates a menu entry in the Google Docs UI when the document is opened.
- */
-function onOpen() {
 
-  SpreadsheetApp.getUi().createAddonMenu()
-      .addItem('Search Ontology Terms...', 'showOntologySearchSidebar')
-      .addItem('Run Annotator...', 'showAnnotatorSidebar')
+function onOpen() {
+  SpreadsheetApp.getUi() 
+      .createMenu('OntoMaton')
+      .addItem('Ontology Search', 'showOntologySearch')
+      .addItem('Ontology Annotator', 'showAnnotator')
       .addSeparator()
-      .addItem('Settings...', 'showSettings')
+      .addItem('Settings', 'showSettings')
       .addItem('About', 'showAbout')
       .addToUi();
 }
-
-/**
- * Runs when the add-on is installed.
- */
-function onInstall() {
-  onOpen();
-}
-
-
-function showOntologySearchSidebar() {
-  var ui = HtmlService.createHtmlOutputFromFile('SearchSidebar')
-      .setTitle('OntoMaton');
-  SpreadsheetApp.getUi().showSidebar(ui);
-}
-
-function showAnnotatorSidebar() {
-  var ui = HtmlService.createHtmlOutputFromFile('AnnotatorSidebar')
-      .setTitle('OntoMaton');
-  SpreadsheetApp.getUi().showSidebar(ui);
-}
-
-
-function runSearch(service, term) {
-  return performSearch(service,term);
-}
-
-function runAnnotator() {
-  return performAnnotation();
-}
-
-function performSearch(service, term) {
-  Logger.log("OntoMaton.performSearch - service is:" + service);
-  switch (service) {
-    case "bioportal":
-      return searchBioPortal(term);
-    case "lov":
-      return searchLOV(term);
-    case "ols":
-      return searchOLS(term);
-    default:
-      return searchLOV(term);
-  }
-}
-

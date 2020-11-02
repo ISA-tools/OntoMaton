@@ -18,41 +18,26 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2020 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2020 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
-
-
 function showAbout() {
-    var mydoc = SpreadsheetApp.getActiveSpreadsheet();
 
-    var app = UiApp.createApplication().setHeight(500);
+    var html = HtmlService.createHtmlOutputFromFile('About-Template')
+      .setTitle('OntoMaton - Ontology Search & Tagging')
+      .setWidth(300);
   
-    var absolutePanel = app.createAbsolutePanel();
-    absolutePanel.setSize(480, 450);
-    
-    absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/ontomaton.png"),35,0);
-    absolutePanel.add(createLabel(app,"version 3.0", "sans-serif", "normal", "12px", "#81A32B"), 345, 90);
+    SpreadsheetApp.getUi()
+      .showSidebar(html);
   
-    absolutePanel.add(createLabel(app, "OntoMaton makes use of the NCBO BioPortal Web Services and Linked Open Vocabularies services to facilitate ontology lookup and tagging within Google Spreadsheets.",
-                                 "sans-serif", "lighter", "14px", "#939598"), 15, 170);
-    
-    absolutePanel.add(app.createImage("http://isatab.sf.net/assets/img/tools/part_of_isatools.png"), 200, 230);
-  
-    absolutePanel.add(createLabel(app, "OntoMaton was developed by the ISA team (http://www.isa-tools.org) at the University of Oxford to aid users in the use of ontologies in their day to day work.",
-                                      "sans-serif", "lighter", "14px", "#939598"), 15, 345);
-      
-    absolutePanel.add(createLabel(app, "For more information see the publication in Bioinformatics: http://bioinformatics.oxfordjournals.org/content/29/4/525",
-                                      "sans-serif", "lighter", "14px", "#939598"), 15, 390);
-    app.add(absolutePanel);
-    mydoc.show(app);
 }
+

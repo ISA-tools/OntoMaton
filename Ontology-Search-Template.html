@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <style>
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: #666666;
+            padding: 10px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .branding-above {
+            padding: 0;
+            top: 0;
+        }
+
+        .sidebar {
+            width: 94%;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        .error {
+          padding-top: 10px;
+          color: #e74c3c;
+        }
+
+        .branding-below {
+            bottom: 56px;
+            position: fixed;
+            background-color: #fff;
+            top: 0;
+        }
+
+        .branding-text {
+            left: 7px;
+            position: relative;
+            font-size: .9em;
+            top: 3px;
+        }
+
+        .ontomaton-header {
+            padding-top: 5px;
+            height: 75px;
+        }
+
+        .col-contain {
+            overflow: hidden;
+        }
+
+        h3 {
+            margin-left: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: left;
+            font-size: 1em;
+            padding: 5px 6px;
+            border-radius: 4px;
+        }
+
+        .col-one {
+            float: left;
+            width: 50%;
+        }
+
+        .logo {
+            vertical-align: middle;
+        }
+
+        .pull-left {
+            float: left;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        .width-100 {
+            width: 100%;
+        }
+
+        #service {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #2f3640;
+        }
+
+        .search-results ul {
+            list-style: none;
+            margin: 0px;
+            text-align: left;
+        }
+
+        .term-info {
+            float: left;
+            width: 70%;
+            margin: 3%;
+        }
+
+        .term-buttons {
+            float: right;
+            width: 21%;
+        }
+
+        .search-results ul li {
+            padding: 4px;
+            font-weight: bolder;
+            font-size: .9em;
+        }
+
+        .search-results ul li a {
+            color: #5A9C43;
+            text-decoration: none;
+        }
+
+        .ontology-abbr {
+            text-align: left;
+            font-weight: bolder;
+            font-size: 1em;
+            color: #414241;
+        }
+
+        .ontology-name {
+            text-align: left;
+            font-weight: bolder;
+            font-size: .8em;
+            color: #95A5A5;
+        }
+
+        .term-count {
+            text-align: right;
+            padding: 7px 5px;
+            background-color: #4FBA6F;
+            color: #fff;
+            border-radius: 50%;
+            font-size: .8em;
+        }
+
+        .btn-green {
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: none;
+            background-color: #5A9C43;
+            width: 100%;
+            color: white;
+            display: block;
+            cursor: pointer;
+        }
+
+        .bth-green:hover {
+            background-color: #4FBA6F;
+        }
+
+
+        ul {
+            -webkit-padding-start: 5px;
+        }
+
+        .term-button button {
+            background-color: #ecf0f1;
+            color: #414241;
+            padding: 5px 8px;
+            border: none;
+            cursor: pointer;
+            display: block;
+        }
+
+        .clearfix:after {
+            content: " ";
+            /* Older browser do not support empty content */
+            visibility: hidden;
+            display: block;
+            height: 0;
+            clear: both;
+        }
+
+        #spinner {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        #spinner p {
+            font-weight: bolder;
+            color: color: #414241;
+        }
+
+        #search-text {
+            border: 1px solid #2f3640;
+            padding: 5px 6px;
+            border-radius: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            position: absolute;
+            width: 242px;
+            bottom: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="ontomaton-header">
+        <img src="http://isa-tools.org/OntoMaton/figures/ontomaton-search.png" />
+    </div>
+    <form>
+        <div class="block col-contain" style="margin-top:20px">
+
+            <div class="col-two">
+                <div id="ontomaton-search-panel">
+                    <label for="search-text" style="font-size: 1em; color: #414241">Search Term</label>
+                    <input type="text" name="search-text" id="search-text" value="" placeholder="e.g. cy5">
+                </div>
+                <br />
+
+                <div class="col-two">
+                    <select id="service" class="width-100">
+                        <option value="bioportal" selected>Search BioPortal</option>
+                        <option value="lov">Search LOV</option>
+                        <option value="ols">Search OLS</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="block" id="button-bar">
+            <button class="btn-green" id="run-search" style="width: 100%">Search</button>
+        </div>
+
+        <div id="search-results" class="block form-group search-results"
+            style="height:60vh; overflow: scroll; padding-top: 10px">
+        </div>
+
+    </form>
+
+
+    <div class="footer">
+        <img alt="Add-on logo" class="logo" src="http://isatab.sourceforge.net/assets/img/isatools-sml.png"><br />
+        <span class="gray branding-text">Created by the <a href="http://isa-tools.org" target="_blank">ISA tools</a>
+            team</span>
+    </div>
+
+
+    <script>
+
+        /**
+         * On document load, assign click handlers to each button and try to load the
+         * user's origin and destination language preferences if previously set.
+         */
+        $(function () {
+            $('#run-search').click(runSearch);
+        });
+
+        /**
+        * Taken from http://www.mustbebuilt.co.uk/2012/04/20/replaceall-function-for-javascript-and-actionscript/
+        */
+        function replaceAll(oldStr, removeStr, replaceStr, caseSenitivity) {
+            var cs = "gi"
+            if (caseSenitivity == 1) {
+                cs = "g";
+            }
+            var myPattern = new RegExp(removeStr, cs);
+            return oldStr.replace(myPattern, replaceStr);
+        }
+
+        /**
+         * Inserts the term in to the spreadsheet.
+         */
+        function insertTerm(term_id) {
+            google.script.run
+                .withSuccessHandler(
+                    function (result, element) {
+                        console.log("success")
+                    }).withFailureHandler(
+                        function (msg, element) {
+                            console.log("failure")
+                            showError(msg, $('#button-bar'));
+                            element.disabled = false;
+                        })
+                .withUserObject(this)
+                .handleTermInsertion(term_id);
+        }
+
+        /**
+         * Runs a server-side function to translate the user-selected text and update
+         * the sidebar UI with the resulting translation.
+         */
+        function runSearch() {
+            
+            var term = $('input[name=search-text]').val();
+            
+            if(term === "") {
+                showError('Please enter a search term.', $('#button-bar'));
+                return
+            }
+            
+            this.disabled = true;            
+            
+            $('#search-results').html('<div id="spinner"><img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="70px"/><p>Searching...</p></div>');
+            $('#error').remove();
+
+            var service = $('#service').val();
+            
+
+            google.script.run
+                .withSuccessHandler(
+                    function (result, element) {
+                        // process results
+                        var html = '<div id="accordion" class="accordion">';
+                        console.log(result);
+                        if (result) {
+                        
+                            Object.keys(result).sort().forEach(function(ontology_abbr) {
+                                var ontology = result[ontology_abbr];
+                                
+                                html += '<h3><span class="ontology-abbr">' + ontology_abbr + '</span> - <span class="ontology-name">' + ontology["ontology-name"] + '</span></h3>' +
+                                    '<div><ul>'
+
+
+                                Object.keys(ontology["terms"]).forEach(function(term_idx) {
+                                    var term = ontology["terms"][term_idx];
+                                    var label = term["label"];
+
+                                    html += '<li>' +
+                                        '<div class="term-info">' +
+                                        '<a href="' + term["url"] + '" target="_blank">' + term["label"] + '</a>' +
+                                        '</div>' +
+                                        '<div class="term-button"><button onclick="insertTerm(\'' + term["id"] + '\'); return false;">Insert</button></div>' +
+                                        '<div class="clearfix"></div>' +
+                                        '</li>';
+                                });
+                                
+                                html += '</ul></div>';
+                            });
+                               
+                        } else {
+                            html += "<p>Sorry, no results were found matching your query...</p>";
+                        }
+
+                        html += "</div>";
+
+                        $('#search-results').html(html);
+
+                        element.disabled = false;
+                        $('#spinner').addClass("hidden");
+                    })
+                .withFailureHandler(
+                    function (msg, element) {
+                        $('#spinner').addClass("hidden");
+                        showError(msg, $('#button-bar'));
+                        element.disabled = false;
+                    })
+                .withUserObject(this)
+                .runSearch(service, term);
+            return false;
+        }
+
+        /**
+         * Inserts a div that contains an error message after a given element.
+         *
+         * @param msg The error message to display.
+         * @param element The element after which to display the error.
+         */
+        function showError(msg, element) {
+            var div = $('<div id="error" class="error">' + msg + '</div>');
+            $(element).after(div);
+        }
+    </script>
+
+</body>
+
+</html>
