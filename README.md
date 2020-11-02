@@ -4,19 +4,25 @@
 
 <br/>
 
+- Version 4: [![DOI](TODO)](TODO)
 
 
-Version 3: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.221457.svg)](https://doi.org/10.5281/zenodo.221457)
+- Version 3: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.221457.svg)](https://doi.org/10.5281/zenodo.221457)
 
 
-Version 2: <a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
+- Version 2: <a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
 <br/>
 <br/>
-OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets.
+OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets (tm).
 
 It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
 <br/>
+
+### [Privacy Statement](http://isa-tools.org/OntoMaton/Ontomaton-privacy.html):
+
+### [Terms of Use](http://isa-tools.org/OntoMaton/Ontomaton-terms.html)
+
 
 ### Read the Publication...
 Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](http://dx.doi.org/10.1093/bioinformatics/bts718).
