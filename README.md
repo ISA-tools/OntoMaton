@@ -13,13 +13,11 @@
 - Version 2: <a href="https://doi.org/10.5281/zenodo.11085"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11085.svg" alt="DOI"></a>
 <br/>
 <br/>
-OntoMaton facilitates ontology search and tagging functionalities within Google Spreadsheets (tm).
 
-It has been developed by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
+Developed and maintained by the [ISA Team](http://isa-tools.org) at the University of [Oxford's e-Research Centre](http://www.oerc.ox.ac.uk).
 
-<br/>
 
-### [Privacy Statement](http://isa-tools.org/OntoMaton/Ontomaton-privacy.html):
+### [Privacy Statement](http://isa-tools.org/OntoMaton/Ontomaton-privacy.html)
 
 ### [Terms of Use](http://isa-tools.org/OntoMaton/Ontomaton-terms.html)
 
@@ -27,9 +25,9 @@ It has been developed by the [ISA Team](http://isa-tools.org) at the University 
 ### Read the Publication...
 Access the Open Access <a href="http://bioinformatics.oxfordjournals.org">Bioinformatics</a> article on OntoMaton [here](http://dx.doi.org/10.1093/bioinformatics/bts718).
 
-<i>Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra  
-OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets  
-Bioinformatics 2013 29: 525-527. doi: [10.1093/bioinformatics/bts718](http://dx.doi.org/10.1093/bioinformatics/bts718)</i>
+<i>*Eamonn Maguire, Alejandra González-Beltrán, Patricia L. Whetzel, Susanna-Assunta Sansone, and Philippe Rocca-Serra* 
+**OntoMaton: a Bioportal powered ontology widget for Google Spreadsheets**
+`Bioinformatics 2013 29: 525-527`. doi: [10.1093/bioinformatics/bts718](http://dx.doi.org/10.1093/bioinformatics/bts718)</i>
 
 Please, note that at the time of the publication, OntoMaton was powered by the <a href="http://bioportal.bioontology.org/">NCBO BioPortal</a> web services. Since then, we have made the following extensions:
 
@@ -39,18 +37,20 @@ Please, note that at the time of the publication, OntoMaton was powered by the <
 
 For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
+- NEW in 2020: Making Ontomaton a Google Market Place App by upgrading the latest version of the Google API.
+
 
 ### Installation
 
-With the new add on infrastructure, installation is very easy. 
+With the new add-on infrastructure, installation is very easy. 
 
-1. Click on the 'Add-ons' menu item in your Google Spreadsheet:
+1. Click on the `Add-ons` menu item in your Google Spreadsheet:
 
 <div align="center">
 <img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig1.png" width="500">
 </div>
 
-2.  Click on 'Get add-ons...' and then search for 'OntoMaton': 
+2.  Click on `Get add-ons...` and then search for 'OntoMaton': 
 
 <div align="center">
 <img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig2.png?" height="200">
@@ -135,6 +135,9 @@ Additionally, within one ontology restriction, for BioPortal searches, you can r
 An example of a google spreadsheet with such functionality can be viewed here: https://docs.google.com/spreadsheet/ccc?key=0Al5WvYyk0zzmdDNLeEcxWHZJX042dS0taXJPNXpJMHc
 
  
+----
+
+
 ### Video Tutorial
 
 Access the video tutorial showing how to install and use OntoMaton (version 1) [here](http://www.youtube.com/watch?v=Qs0nxGBfQac&feature=player_embedded).
