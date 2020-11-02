@@ -1,5 +1,5 @@
 <div align="center">
-<img src="http://isatab.sf.net/assets/img/tools/ontomaton.png" align="center"/>
+<img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton.png" align="center"/>
 </div>
 
 <br/>
