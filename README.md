@@ -1,5 +1,5 @@
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton.png" align="center"/>
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton.png" align="center"/>
 </div>
 
 <br/>
@@ -37,7 +37,7 @@ Please, note that at the time of the publication, OntoMaton was powered by the <
 
 For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
-- NEW in 2020: Making Ontomaton a Google Market Place App by upgrading the latest version of the Google API.
+- `NEW in 2020: Making Ontomaton a Google Market Place App by upgrading to the latest version of the Google API`.
 
 
 ### Installation
@@ -47,44 +47,44 @@ With the new add-on infrastructure, installation is very easy.
 1. Click on the `Add-ons` menu item in your Google Spreadsheet:
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig1.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig1.png" width="500">
 </div>
 
 2.  Click on `Get add-ons...` and then search for 'OntoMaton': 
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig2.png?" height="200">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig2.png?" height="200">
 </div>
 
 You should get the following result:
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig3.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig3.png" width="500">
 </div>
 
 Here you can click on the image and read more about OntoMaton:
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig4.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig4.png" width="500">
 </div>
 
 3. To install, click on '+FREE'. You will need to authorise OntoMaton Add-on to access your spreadsheets and to connect to external services (the ontology search services we support):
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig5.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig5.png" width="500">
 </div>
 
 
 4. You'll then have the OntoMaton app installed. 
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig6.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig6.png" width="500">
 </div>
 
 You can access it through the 'Add On' menu option.
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig7.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig7.png" width="500">
 </div>
 
 ### Ontology Search
@@ -92,7 +92,7 @@ You can access it through the 'Add On' menu option.
 From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](http://lov.okfn.org) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig8.png" width="700">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig8.png" width="700">
 </div>
 
 ### Ontology Tagging
@@ -107,7 +107,7 @@ With OntoMaton, you can select a number of spreadsheet cells and then 'tag' them
 
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig9.png" width="500">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig9.png" width="500">
 </div>
 
 From the settings screen, you can configure:
@@ -119,11 +119,11 @@ From the settings screen, you can configure:
 ### Restricting OntoMaton's search space
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig10.png" width="600">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig10.png" width="600">
 </div>
 
 <div align="center">
-<img src="http://isa-tools.org/OntoMaton/figures/ontomaton-fig13.png" width="600">
+<img src="https://isa-tools.org/OntoMaton/figures/ontomaton-fig13.png" width="600">
 </div>
 
 
