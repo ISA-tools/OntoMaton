@@ -18,17 +18,18 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2020 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2020 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+
 
 // constants
 var OLS_API_BASE_URI = "http://www.ebi.ac.uk/ols/api";
@@ -271,29 +272,6 @@ function createLabel(app, text, fontfamily, fontweight, fontsize, color) {
      return label;
 }
 
-function sortDictAndReturnSortedKeys(dict) {
-  var sorted = [];
-    for(var key in dict) {
-        sorted.push(key);
-    }
-    return sorted.sort();
-}
-
-function sortOnKeys(dict) {
-
-    var sorted = [];
-    for(var key in dict) {
-        sorted[sorted.length] = key;
-    }
-    sorted.sort();
-
-    var tempDict = {};
-    for(var i = 0; i < sorted.length; i++) {
-        tempDict[sorted[i]] = dict[sorted[i]];
-    }
-
-    return tempDict;
-}
 
 function itemDefinitionHandler(e) {
     var app = UiApp.getActiveApplication();
@@ -328,7 +306,6 @@ function itemDefinitionHandlerLOV(e) {
 /**
    The cache items have a limited size. This method splits up large
    results and can put them back together again
-
    cache is an instance of CacheService
    cache key will be something like lov or bioportal
    toStore is the text to keep
@@ -355,7 +332,6 @@ function splitResultAndCache(cache, cacheKey, toStore) {
 
 function getCacheResultAndMerge(cache, cacheKey) {
     var fragments = cache.get(cacheKey + "_fragments");
-    Logger.log(fragments);
     var fullResult = "";
     var fragmentCount = 0;
     while(fragmentCount < fragments) {

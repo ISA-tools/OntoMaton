@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <style>
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: #666666;
+            padding: 10px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        #loading,
+        #loading-preferences {
+            padding: 30px;
+        }
+
+        #info {
+            padding: 10px;
+            font-weight: bolder;
+        }
+
+        .btn-green {
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: none;
+            background-color: #4FBA6F;
+            width: 100%;
+            color: white;
+            display: block;
+            cursor: pointer;
+        }
+
+        .bth-green:hover {
+            background-color: #4FBA6F;
+        }
+
+        .restrictions {
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script>
+
+        var ontologies = {};
+        var selectedOntologyService = 'BioPortal';
+
+        $(function () {
+            google.script.run.withSuccessHandler(setOntologies)
+                .loadOntologies();
+
+            google.script.run.withSuccessHandler(setInsertionPreference)
+                .loadPreferences();
+
+        });
+
+        function setInsertionPreference(data) {
+            insertionOneColumn = data;
+
+            $('#option_same_column').attr('checked', insertionOneColumn);
+            $('#option_different_column').attr('checked', !insertionOneColumn);
+
+            $('#loading-preferences').addClass('hidden');
+            $('#preferences').removeClass('hidden');
+        }
+
+
+        function updateInsertionPreferences() {
+            insertionOneColumn = $('#option_same_column').is(":checked");
+            console.log(insertionOneColumn);
+            google.script.run.setOntologyInsertionPreference(insertionOneColumn);
+        }
+
+        function setOntologies(data) {
+            ontologies = data;
+            $('#loading').addClass('hidden');
+            $('#restrictions').removeClass('hidden');
+
+            renderRestrictions();
+        }
+
+        function renderRestrictions() {
+            $('#ontology').html('');
+            $('#hiddenService').val(selectedOntologyService);
+            Object.keys(ontologies[selectedOntologyService]).sort().forEach(function (d) {
+                $('#ontology').append('<option value="' + d + ' - ' + ontologies[selectedOntologyService][d].name + '">' + d + ' - ' + ontologies[selectedOntologyService][d].name + '</option>');
+            });
+        }
+
+        function updateRestrictionsList() {
+            selectedOntologyService = $('#service').val();
+            renderRestrictions();
+        }
+
+        function showAddRestrictionStatus(callback) {
+            $('#info').removeClass('hidden');
+            $('#info').text(callback);
+            window.setTimeout(function () {
+                $('#info').text('');
+                $('#info').addClass('hidden');
+            }, 10000);
+        }
+
+        function preventFormSubmit() {
+            var forms = document.querySelectorAll('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].addEventListener('submit', function (event) {
+                    event.preventDefault();
+                });
+            }
+        }
+
+        function addRestriction(formObject) {
+            console.log(formObject);
+            var columnName = $('#columnName').val();
+            if (columnName != "") {
+                google.script.run.withSuccessHandler(showAddRestrictionStatus).addRestrictionHandler(formObject)
+            } else {
+                showAddRestrictionStatus('Column Name must not be empty.');
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+    <div align="center">
+        <img src="https://isa-tools.org/OntoMaton/figures/ontomaton-settings.png" width="95%" />
+    </div>
+    <br /><br />
+    <div align="left" id="options">
+
+        <div id="loading-preferences" align="center">
+            <img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif"
+                width="40px" />
+            <p>Loading Preferences
+        </div>
+    </div>
+
+    <div id="preferences" class="hidden">
+        <p style="font-weight: bolder">How do you want ontology terms to be entered in the spreadsheet?</p>
+        <br />
+        <input type="radio" id="option_same_column" name="ontologyFormat" value="same"
+            onchange="updateInsertionPreferences()">
+        <label for="male">Place term name and accession in same column</label><br>
+        <input type="radio" id="option_different_column" name="ontologyFormat" onchange="updateInsertionPreferences()"
+            value="different" checked>
+        <label for="female">Place term name and accession in different columns.</label><br>
+    </div>
+
+    <br /><br />
+
+    <p style="font-weight: bolder">Do you wish to restrict the search space for columns?</p>
+    <p style="font-size: 12px; color: #bbbbbb">All restrictions are added to the 'Restrictions' sheet.</p>
+
+    <br />
+
+    <div id="loading" align="center">
+        <img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="40px"
+            />
+        <p>Loading Ontologies</p>
+    </div>
+
+    <div id="restrictions" class="restrictions hidden">
+
+        <div>
+            <p style="font-weight: bolder">Ontology Service</p>
+
+            <select id="service" name="service" onchange="updateRestrictionsList()" style="width: 100%;">
+                <option value="BioPortal" selected>Bioportal</option>
+                <option value="LOV">LOV</option>
+                <option value="OLS">OLS</option>
+            </select>
+        </div>
+        <br />
+
+        <form id="ontologySelectionForm" onsubmit="addRestriction(this)">
+            <div>
+                <p style="font-weight: bolder">Column Name</p>
+                <input id="columnName" name="columnName" type="text" style="width: 96%" />
+            </div>
+            <br />
+            <div>
+                <p style="font-weight: bolder">Ontology</p>
+                <select id="ontology" name="ontology" style="width: 100%;">
+                </select>
+            </div>
+
+            <input id="hiddenService" name="service" type="hidden" />
+            <br />
+            <p id="info" class="hidden"></p>
+            <button type="submit" class="btn-green">Add Restriction</button>
+        </form>
+    </div>
+
+    <br />
+    <br />
+
+    <p>
+        <span class="btn-green" onclick="google.script.run.viewRestrictionHandler()">
+            View all restrictions
+        </span>
+    </p>
+
+
+</body>
+
+</html>
