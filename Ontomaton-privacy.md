@@ -9,10 +9,13 @@ ___
 ## Privacy Statement
 
 <li>
-	<code>Ontomaton</code> <strong>does not store or use any personal data</strong>. It is the responsibility of users to ensure the protection of personal data when using this app.</p>
+	<code>Ontomaton</code> <strong>does not store or use any personal data</strong>. 
+	<p>It is the responsibility of users to ensure the protection of personal data when using this app.</p>
 </li>
+
 <li class="task-list-item">
-<p><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" checked=""> As a reminder, the <strong>General Data Protection Regulation (GDPR)</strong> applies to the UK since 25 May 2018. It will replace the 1998 Data Protection Act and introduce new rules on privacy notices, as well as the processing and safeguarding personal data. By using the plugin you are agreeing to this as outlined in our Privacy Notice and Terms of Use.</p>
+	<code>As a reminder, the <strong>General Data Protection Regulation (GDPR)</strong> applies to the UK since 25 May 2018.</code>
+	<p>It replaces the 1998 Data Protection Act and introduce new rules on privacy notices, as well as the processing and safeguarding personal data. By using the plugin you are agreeing to this as outlined in our Privacy Notice and Terms of Use.</p>
 </li>
 
 ___
@@ -33,7 +36,9 @@ If you have any queries, please email us at [link](mailto:isatools@googlegroups.
 
 This work is licensed through a [CPAL license](http://isatab.sf.net/licenses/OntoMaton-license.html), meaning that any derivitives should carry a powered by OntoMaton logo, shown here.
 
-![image](http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png)
+<!-- ![image](http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png) -->
+
+<p><img src="https://camo.githubusercontent.com/1a972d4b6bfd5c19d3259c985aed6ff9fa3dfaa5/687474703a2f2f6973617461622e73662e6e65742f6173736574732f696d672f746f6f6c732f6f6e746f6d61746f6e2d706172742d6f662d697361746f6f6c732e706e67" alt="image" data-canonical-src="http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png"></p>
 
 ### Merchandise
 

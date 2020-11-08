@@ -47,7 +47,7 @@ If you have any queries, please email us at [link](mailto:isatools@googlegroups.
 
 This work is licensed through a [CPAL license](http://isatab.sf.net/licenses/OntoMaton-license.html), meaning that any derivitives should carry a powered by OntoMaton logo, shown here.
 
-![image](http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png)
+<p><img src="https://camo.githubusercontent.com/1a972d4b6bfd5c19d3259c985aed6ff9fa3dfaa5/687474703a2f2f6973617461622e73662e6e65742f6173736574732f696d672f746f6f6c732f6f6e746f6d61746f6e2d706172742d6f662d697361746f6f6c732e706e67" alt="image" data-canonical-src="http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png"></p>
 
 ### Merchandise
 
