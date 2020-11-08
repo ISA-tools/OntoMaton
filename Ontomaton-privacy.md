@@ -18,6 +18,17 @@ ___
 	<p>It replaces the 1998 Data Protection Act and introduce new rules on privacy notices, as well as the processing and safeguarding personal data. By using the plugin you are agreeing to this as outlined in our Privacy Notice and Terms of Use.</p>
 </li>
 
+<li>
+	<code>We require access to edit Spreadsheets in order to add restrictions, store settings, and to automatically create term provenance.</code>
+</li>
+<li>
+	 <code>We also need to insert content in the sheet when the user selects a term.</code> 
+</li>
+
+<li>
+	<code>No user data is ever transferred to the OntoMaton development team.</code>
+</li>
+
 ___
  
 ### Video Tutorial
