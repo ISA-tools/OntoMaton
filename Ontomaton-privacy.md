@@ -45,7 +45,7 @@ This is the only Add-ons can actually operate.
 Once **Ontomaton** is installed, users can then invoke the functions (*ontology lookup* or *tagging*) of the tool. As described earlier on, these functions use `strings`, as found in the document cells, to form a request to the APIs of the 3 ontology services listed above. All of these APIs rely on API-keys. Each of these keys is associated with the Ontomaton App, not with the user who has granted access to the Ontomaton app.
 
 
-:warning: IMPORTANT
+IMPORTANT:
  - Ontomaton app does not store or use any personal data
  - Ontomaton app does not send any information back to either the ISA Team or Ontomaton Developers or the University of Oxford
  - No information about Ontomaton usage is tracked, recorded or stored in any way or forms by the ISA Team or Ontomaton Developers or the University of Oxford
