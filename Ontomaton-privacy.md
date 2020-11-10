@@ -8,10 +8,61 @@ ___
 
 ## Privacy Statement
 
-<li>
-	<code>Ontomaton</code> <strong>does not store or use any personal data</strong>. 
-	<p>It is the responsibility of users to ensure the protection of personal data when using this app.</p>
-</li>
+### 1. Who is producing Ontomaton
+
+`Ontomaton Appscript for Google Spreadsheet` is a add-on developed  by the [ISA tools](https://isa-tools.org), in the  [Data Readiness Group](), at Oxford e-Research Centre, Department of Engineering Science, University of Oxford, United Kingdom.  The lead developer for the app is Dr Eamonn Maguire, based on discussions with Dr Philippe Rocca-Serra.
+
+### 2. Why was Ontomaton developped?
+
+Ontomaton was initially developed to allow semantic markup and ontology based annotations of textual entities in a collaborative spreadsheet environmnent using Investigation Study Assay Configurations Excel Templates to enable Experimental metadata tracking.
+
+The solution eventually developed is so generic that it can be used to provide ontology annotation in any Google Spreadsheet, irrespective of the spreadsheet layout.
+
+With Ontomaton, users associate textual entities such as strings with a persistent, stable, resolvable identifier uniquely linked to a concept or term found in a semantic resources, thus disambiguating annotation. The intended audience for Ontomaton is Research Scientists, Data Curators, Annotators or anyone involved in improving and harmonizing document annotation.
+
+### 3. What does Ontomaton require and do?
+
+At the core of the function offered by Ontomaton is the reliance on third party ontology services, which are:
+	- [NCBO Bioportal](http://data.bioontology.org/documentation)
+	- [EMBL-EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/docs/api)
+	- [Linked Open Vocabulary Database](https://lov.linkeddata.es/dataset/lov/api)
+
+When using Ontomaton, `strings` located in a cell of a spreadsheet are used as `input to create a request to these third party ontology services`, which will return any hit/match on the resources hosted.
+With the results returned by the service are then displayed in the dedicated panel in the google spreadsheeet for users to select and choose the most suitable.
+
+### 4. Which personal information does Ontomaton need and does Ontomaton store any of my data? 
+
+Ontomaton uses 2 different types of user data:
+
+#### 4.1. User Authentication Information
+
+Since Ontomaton is an add-on to Google Spreadsheet, for it to work, Ontomaton needs **user consent** to be installed. It is only with this consent, that the Ontomaton application can use user authentication credentials to see user's Spreadsheet documents (file names, permissions, and within a spreadsheet, the different worksheets).
+
+This is the only Add-ons can actually operate.
+
+#### 4.2. Spreadsheet information
+
+Once Ontomaton is installed by a user, the user can then invoke the functions (ontology lookup or tagging) of the tool. As described earlier on, these functions use `strings` as found in the document cells to form a request to the APIs of the 3 ontology services identified. All of these APIs rely on API-keys, which are associated to the Ontomaton App, not with the user who has granted access to the Ontomaton app.
+
+
+IMPORTANT: 
+ - **Ontomaton app does not store or use any personal data**
+ - **Ontomaton app does not send any information back to the ISA Team or Ontomaton Developers or the University of Oxford**
+ - **No information about Ontomaton usage is tracked, recorded or stored in any way or forms by the ISA Team or Ontomaton Developers or the University of Oxford**
+
+#### 5. Who is the Data Controller for Ontomaton and Whom should I contact for any inquiry about data use?
+
+As indicated in *section 4*, Ontomaton does not store any personal information nor does it transmit information to Ontomaton developers or any third party for data mining and tracking, therefore Ontomaton does not require a Data Controller.
+However, for any question about Ontomaton, feature requests, users can contact the [ISA Team and the developers](mailto:isatools@googlegroups.com).
+
+#### 6. How long is user personal data stored ?
+
+As indicated in *section 4*, Ontomaton does not store any personal information nor does it transmit information to Ontomaton developers or any third party, so the concern about duration of storage does not apply.
+
+#### 7. Anything else Users need to know about Data Privacy and associated concerns ?
+
+Well yes there is. Since Ontomaton does not store or handles users data, it is however the responsibility of the user (data owner) to take all the necessary measures to ensure that sensitive data is handled in compliance with privacy perserving regulation.
+ 
 
 <li class="task-list-item">
 	<code>As a reminder, the <strong>General Data Protection Regulation (GDPR)</strong> applies to the UK since 25 May 2018.</code>
