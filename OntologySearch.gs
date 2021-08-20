@@ -18,18 +18,44 @@
 //
 // The Original Code is OntoMaton.
 // The Original Developer is the Initial Developer. The Initial Developer of the
-// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com; Massimiliano Izzo <massimorgon@gmail.com>;
-// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com;
+// Original Code is the ISA Team (Eamonn Maguire, eamonnmag@gmail.com;
+// Philippe Rocca-Serra, proccaserra@gmail.com; Susanna-Assunta Sansone, sa.sanson@gmail.com; Alejandra Gonzalez-Beltran, alejandra.gonzalez.beltran@gmail.com
 // http://www.isa-tools.org). All portions of the code written by the ISA Team are
-// Copyright (c) 2007-2016 ISA Team. All Rights Reserved.
+// Copyright (c) 2007-2020 ISA Team. All Rights Reserved.
 //
 // EXHIBIT B. Attribution Information
-// Attribution Copyright Notice: Copyright (c) 2007-2016 ISA Team
+// Attribution Copyright Notice: Copyright (c) 2007-2020 ISA Team
 // Attribution Phrase: Developed by the ISA Team
 // Attribution URL: http://www.isa-tools.org
 // Graphic Image provided in the Covered Code as file: http://isatab.sf.net/assets/img/tools/ontomaton-part-of-isatools.png
 // Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
 
+function showOntologySearch() {
+    var html = HtmlService.createHtmlOutputFromFile('Ontology-Search-Template')
+      .setTitle('OntoMaton - Ontology Search & Tagging')
+      .setWidth(300);
+
+    SpreadsheetApp.getUi()
+      .showSidebar(html);
+}
+
+function runSearch(service, term) {
+  return performSearch(service,term);
+}
+
+
+function performSearch(service, term) {
+  switch (service) {
+    case "bioportal":
+      return searchBioPortal(term);
+    case "lov":
+      return searchLOV(term);
+    case "ols":
+      return searchOLS(term);
+    default:
+      return searchLOV(term);
+  }
+}
 
 function searchBioPortal(term) {
     try {
@@ -41,7 +67,6 @@ function searchBioPortal(term) {
             // todo check if particular column has a restriction in the hidden sheet. If so, restrict the search.
             var searchString = "http://data.bioontology.org/search?q=" + term + "&display_context=false";
 
-            Logger.log("restriction.service==>"+restriction.service);
             if (restriction) {
                 if (restriction.branch)
                     searchString += "&ontology=" + restriction.ontologyId + "&subtree=" + restriction.branch + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
@@ -49,12 +74,8 @@ function searchBioPortal(term) {
                     searchString += "&ontologies=" + restriction.ontologyId + "&apikey=fd88ee35-6995-475d-b15a-85f1b9dd7a42";
             }
 
-            Logger.log("searchString==>"+searchString);
-
             // we cache results and try to retrieve them on every new execution.
             var cacheResult = fetchFromCache(searchString);
-
-            Logger.log("cacheResult==> "+cacheResult);
 
             var text, key;
             if (cacheResult != undefined) {
@@ -87,13 +108,11 @@ function searchBioPortal(term) {
                       "url": result["@id"] //result.links.ui
                     };
                     var ontology_record_string = JSON.stringify(ontology_record);
-                    Logger.log("BioPortal ontology_record " + ontology_record_string)
 
                     storeInCache(key, ontology_record_string);
                     ontologyDictionary[ontologyLabel].terms.push(ontology_record);
                 }
 
-                ontologyDictionary.sortedOntologies = sortDictAndReturnSortedKeys(ontologyDictionary);
                 storeInCache(searchString, JSON.stringify(ontologyDictionary));
 
                 return ontologyDictionary;
@@ -128,7 +147,6 @@ function searchLOV(term) {
                 url = "";
             }
         }
-        Logger.log("url----> " + url)
 
         if (url) {
 
@@ -147,11 +165,8 @@ function searchLOV(term) {
 
             var parsed_result = JSON.parse(text);
 
-            Logger.log("parsed_result---> " + parsed_result)
-
             if (!parsed_result.error) {
 
-                Logger.log("inside if")
                 var results = parsed_result.results;
 
                 for (var i in results) {
@@ -159,7 +174,6 @@ function searchLOV(term) {
                     var uriPrefixed = results[i]['prefixedName'][0];
                     label = uriPrefixed.split(':')[1];
                     var key = uriPrefixed;
-                    Logger.log("LOV key---> " + key)
                     var uri = results[i].uri[0];
                     var vocabularyPrefix = results[i]['vocabulary.prefix'][0];
 
@@ -184,8 +198,6 @@ function searchLOV(term) {
                           "url":uri
                         };
                         var ontology_record_string = JSON.stringify(ontology_record);
-                        Logger.log("LOV ontology_record " + ontology_record_string)
-                        //storeInCache(uri, ontology_record_string);
                         storeInCache(key, ontology_record_string);
                         ontologyDictionary[ontologyLabel].terms.push(ontology_record);
 
@@ -194,7 +206,6 @@ function searchLOV(term) {
                 }//for
                 //storeInCache(url, JSON.stringify(text));
                 storeInCache(url, text);
-                ontologyDictionary.sortedOntologies = sortDictAndReturnSortedKeys(ontologyDictionary);
                 return ontologyDictionary;
             }// no error
         }
@@ -223,17 +234,13 @@ function searchOLS(term) {
       ontology: restriction ? restriction.ontologyId : undefined
     };
     var queryString = jsonToQueryString(queryObj);
-    Logger.log(queryString);
     url += '?' + queryString;
-    Logger.log(url);
     var cacheResult = fetchFromCache(url);
     if (cacheResult) {
       return JSON.parse(cacheResult);
     }
     var text = UrlFetchApp.fetch(url).getContentText(), json = JSON.parse(text), ontologyDict = {};
-    Logger.log(json);
-    Logger.log(json.response);
-    Logger.log(json.response.docs);
+
     var docs = json.response && json.response.docs;
     if (!docs || docs.length === 0) {
       throw "No Result found.";
@@ -252,13 +259,11 @@ function searchOLS(term) {
           details: '',
           url: elem.iri
         };
-        // for OLS, the key in the cache is the record.id, which is the ontology term URI
-        Logger.log("OLS ontology_record " + JSON.stringify(record))
+
         storeInCache(record.id, JSON.stringify(record));
         ontologyDict[ontologyLabel].terms.push(record);
       }
     });
-    ontologyDict.sortedOntologies = sortDictAndReturnSortedKeys(ontologyDict);
     storeInCache(url, JSON.stringify(ontologyDict));
     // Logger.log(ontologyDict);
     return ontologyDict;
@@ -270,16 +275,12 @@ function searchOLS(term) {
 }
 
 function handleTermInsertion(term_id) {
-  Logger.log("handleTermInsertion - here we are - term is: " + term_id);
   try {
     var sheet = SpreadsheetApp.getActiveSheet();
     var selectedRange = sheet.getActiveSelection();
-    Logger.log("handleTermInsertion - term_id:" + term_id);
     var textTerm = fetchFromCache(term_id);
-    Logger.log("handleTermInsertion - from cache textTerm:" + textTerm);
     var term = JSON.parse(textTerm);
-    Logger.log("handleTermInsertion - term:" + textTerm);
-    Logger.log(term);
+
     var ontologyObject = {
         "term": term["label"],
         "accession": term_id,
@@ -288,15 +289,12 @@ function handleTermInsertion(term_id) {
         "ontologyDescription": term["ontology-name"],
         "url": term["url"]
     }
-    Logger.log("handleTermInsertion - ontologyObject:"+ JSON.stringify(ontologyObject));
+
     // figure out whether the Term Source REF and Term Accession Number columns exist, if they do exist at all. Insertion technique will vary
     // depending on the file being looked at.
     var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
+    
     // add all terms into a separate sheet with all their information.
-
-    Logger.log("handleTermInsertion - sourceAndAccessionPositions:");
-    Logger.log(sourceAndAccessionPositions);
-
     if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
         insertOntologySourceInformationInInvestigationBlock(ontologyObject);
     }
@@ -311,10 +309,10 @@ function handleTermInsertion(term_id) {
             sheet.getRange(row, sourceAndAccessionPositions.accession).setValue(ontologyObject.url);
         } else {
 
-            var isDefaultInsertionMechanism = isCurrentSettingOnDefault();
+            var isDefaultInsertionMechanism = loadPreferences();
             var selectedColumn = selectedRange.getColumn();
             var nextColumn = selectedColumn + 1;
-            Logger.log("handleTermInsertion - ready to insert ontology object, with default mechanism set to " + isDefaultInsertionMechanism);
+
             if (!isDefaultInsertionMechanism) {
                 sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
                 sheet.getRange(row, nextColumn).setValue(ontologyObject.url);
