@@ -4,7 +4,7 @@
 
 <br/>
 
-Version 4: [![DOI](https://zenodo.org/badge/5227312.svg)](https://doi.org/10.5281/zenodo.5227312)
+Version 4: [![DOI](https://zenodo.org/badge/DOI/10/5281/zenodo.5227312.svg)](https://doi.org/10.5281/zenodo.5227312)
 
 
 Version 3: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.221457.svg)](https://doi.org/10.5281/zenodo.221457)
