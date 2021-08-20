@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Maguire"
+  given-names: "Eamonn"
+  orcid: "https://orcid.org/0000-0002-7277-7834"
+- family-names: "Gonzalez Beltran"
+  given-names: "Alejandra"
+  orcid: "https://orcid.org/0000-0003-3499-8262" 
+- family-names: "Whetzel"
+  given-names: "Patricia"
+  orcid: "https://orcid.org/0000-0002-3458-4839" 
+- family-names: "Sansone"
+  given-names: "Susanna Assunta"
+  orcid: "https://orcid.org/0000-0001-5306-5690" 
+- family-names: "Rocca-Serra"
+  given-names: "Philippe"
+  orcid: "https://orcid.org/0000-0001-9853-5668"
+title: "Ontomaton"
+version: 4.0
+doi: 10.5281/zenodo.
+date-released: 2021-08-20
+url: "https://github.com/ISA-tools/OntoMaton"
