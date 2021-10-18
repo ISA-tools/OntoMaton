@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <style>
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: #666666;
+            padding: 10px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .branding-above {
+            padding: 0;
+            top: 0;
+        }
+
+        .sidebar {
+            width: 94%;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        .error {
+          padding-top: 10px;
+          color: #e74c3c;
+        }
+
+        .branding-below {
+            bottom: 56px;
+            position: fixed;
+            background-color: #fff;
+            top: 0;
+        }
+
+        .branding-text {
+            left: 7px;
+            position: relative;
+            font-size: .9em;
+            top: 3px;
+        }
+
+        .PROMA-header {
+            padding-top: 5px;
+            height: 75px;
+        }
+
+        .col-contain {
+            overflow: hidden;
+        }
+
+        h3 {
+            margin-left: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: left;
+            font-size: 1em;
+            padding: 5px 6px;
+            border-radius: 4px;
+        }
+
+        .col-one {
+            float: left;
+            width: 50%;
+        }
+
+        .logo {
+            vertical-align: middle;
+            width: 175px;
+        }
+
+        .pull-left {
+            float: left;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        .width-100 {
+            width: 100%;
+        }
+
+        #parameter {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #2f3640;
+        }
+
+        #template {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #2f3640;
+        }
+
+        .search-results ul {
+            list-style: none;
+            margin: 0px;
+            text-align: left;
+        }
+
+        .term-info {
+            float: left;
+            width: 70%;
+            margin: 3%;
+        }
+
+        .term-buttons {
+            float: right;
+            width: 21%;
+        }
+
+        .search-results ul li {
+            padding: 4px;
+            font-weight: bolder;
+            font-size: .9em;
+        }
+
+        .search-results ul li a {
+            color: #5A9C43;
+            text-decoration: none;
+        }
+
+        .ontology-abbr {
+            text-align: left;
+            font-weight: bolder;
+            font-size: 1em;
+            color: #414241;
+        }
+
+        .ontology-obo_id {
+            text-align: left;
+            font-weight: bolder;
+            font-size: .8em;
+            color: #95A5A5;
+        }
+
+        .term-count {
+            text-align: right;
+            padding: 7px 5px;
+            background-color: #4FBA6F;
+            color: #fff;
+            border-radius: 50%;
+            font-size: .8em;
+        }
+
+        .btn-green {
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: none;
+            background-color: #5A9C43;
+            width: 100%;
+            color: white;
+            display: block;
+            cursor: pointer;
+        }
+
+        .bth-green:hover {
+            background-color: #4FBA6F;
+        }
+
+
+        ul {
+            -webkit-padding-start: 5px;
+        }
+
+        .term-button button {
+            background-color: #ecf0f1;
+            color: #414241;
+            padding: 5px 8px;
+            border: none;
+            cursor: pointer;
+            display: block;
+        }
+
+        .clearfix:after {
+            content: " ";
+            /* Older browser do not support empty content */
+            visibility: hidden;
+            display: block;
+            height: 0;
+            clear: both;
+        }
+
+        #spinner {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        #spinner p {
+            font-weight: bolder;
+            color: color: #414241;
+        }
+
+        #search-text {
+            border: 1px solid #2f3640;
+            padding: 5px 6px;
+            border-radius: 4px;
+        }
+
+        #MT-text {
+            border: 1px solid #2f3640;
+            padding: 5px 6px;
+            border-radius: 4px;
+        }
+
+        #TA-text {
+            border: 1px solid #2f3640;
+            padding: 5px 6px;
+            border-radius: 4px;
+
+        .footer {
+            text-align: center;
+            position: float;
+            width: 242px;
+            bottom: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="PROMA-header" align="center">
+        <img src="https://raw.githubusercontent.com/bigbio/proma/main/figures/logo_with_name.png" width="225" height="60">
+    </div>
+    <form>
+        <div class="block col-contain" style="margin-top:20px">
+
+                <div class="col-two">
+                    <label style="font-size: 1em; color: #414241">Select Template</label>
+                    <select id="template" class="width-100">
+                        <option value="cell-line" selected>cell-line</option>
+                        <option value="default">default</option>
+                        <option value="human">human</option>
+                        <option value="nonvertebrates">nonvertebrates</option>
+                        <option value="plants">plants</option>
+                        <option value="vertebrates">vertebrates</option>
+                    </select>
+                </div>
+
+                <div>
+                    <h style="font-size: .85em; color: #2f3640"><b>* Select a Template: </b>Selecting the template and applying it will overwrite the first line of the current sheet! 
+                    </h>
+                </div>
+
+                <div>
+                    <button class="btn-green" style="width: 100%" onclick="selectTemplate(); return false;">Apply</button>
+                </div>  
+                <br />
+
+                <div class="col-two">
+
+                    <div id="ontomaton-search-panel">                                                               
+                        <label for="MT-text" style="font-size: 1em; color: #414241">Modification Type [MT]</label>
+                        <input type="text" name="MT-text" id="MT-text" value="" placeholder="e.g. Variable">
+                    </div>
+                    <br />
+
+                    <div id="ontomaton-search-panel">
+                        <label for="TA-text" style="font-size: 1em; color: #414241">Target Amino acid [TA]</label>
+                        <input type="text" name="TA-text" id="TA-text" value="" placeholder="e.g. M">
+                    </div>
+                    <br />   
+
+                    <div id="ontomaton-search-panel">
+                        <label for="search-text" style="font-size: 1em; color: #414241">Name OR Accession [NT][AC]</label>
+                        <input type="text" name="search-text" id="search-text" value="" placeholder="e.g. Oxidation"> *
+                    </div>
+                    <br /> 
+
+                    <div class="col-two">
+                        <label style="font-size: 1em; color: #414241">Parameter Type</label>
+                        <select id="parameter" class="width-100">
+                            <option value="modification parameters" selected>modification parameters</option>
+                            <option value="instrument">instrument</option>
+                            <option value="cleavage agent details">cleavage agent details</option>
+                            <option value="label">label</option>
+                        </select>
+                    </div> 
+                
+                </div>
+        </div>
+
+        
+        <div>
+            <h style="font-size: .85em; color: #2f3640"><b>* Annotation: </b>When the first row is complete, search, click on the cell to determine the range and insert.
+            </h>
+            <br />
+
+        </div>
+
+        <div class="block" id="button-bar">
+            <button class="btn-green" id="run-search" style="width: 100%">Search</button>
+        </div>
+
+        <div id="search-results" class="block form-group search-results"
+            style="height:50vh; width:100%; overflow: scroll; padding-top: 5px">
+        </div>
+
+    </form>
+    <br />
+
+
+    <div class="footer" align="center">
+        <img alt="Add-on logo" class="logo" src="//isa-tools.org/OntoMaton/figures/ontomaton-search.png"><br />
+        <span class="gray branding-text">Powered by <a href="http://isa-tools.org/OntoMaton" target="_blank">OntoMaton</a>
+        </span>
+    </div>
+
+
+    <script>
+
+        $(function () {
+            $('#run-search').click(runSearch);
+        });
+
+        function replaceAll(oldStr, removeStr, replaceStr, caseSenitivity) {
+            var cs = "gi"
+            if (caseSenitivity == 1) {
+                cs = "g";
+            }
+            var myPattern = new RegExp(removeStr, cs);
+            return oldStr.replace(myPattern, replaceStr);
+        }
+
+        function insertTerm(term_id) {
+            var MT = $('input[name=MT-text]').val();
+            var TA = $('input[name=TA-text]').val();
+            var parameter = $('#parameter').val();         
+            google.script.run
+                .withSuccessHandler(
+                    function (result, element) {
+                        console.log("success")
+                    }).withFailureHandler(
+                        function (msg, element) {
+                            console.log("failure")
+                            showError(msg, $('#button-bar'));
+                            element.disabled = false;
+                        })
+                .withUserObject(this)
+                .handleSDRFInsertion(term_id,MT,TA,parameter);
+        }
+
+        function selectTemplate() {
+          var template = $('#template').val();
+          google.script.run
+                .withSuccessHandler(
+                    function (result, element) {
+                        console.log("success")
+                    }).withFailureHandler(
+                        function (msg, element) {
+                            console.log("failure")
+                            showError(msg, $('#button-bar'));
+                            element.disabled = false;
+                        })
+                .withUserObject(this)
+                .handleTemplateInsertion(template);
+        }
+
+        function runSearch() {
+            
+            var term = $('input[name=search-text]').val();
+            var MT = $('input[name=MT-text]').val();
+            var TA = $('input[name=TA-text]').val();
+            var parameter = $('#parameter').val(); 
+            if(parameter == 'modification parameters'){
+              if(term == '' || TA == ''){
+                showError('NT and TA must be filled in!', $('#button-bar'));
+                return
+              }
+            }
+            else if(parameter == 'instrument' || parameter == 'cleavage agent details' || parameter == 'label'){
+              if(term == ''){
+                showError('NT must be filled in!.', $('#button-bar'));
+                return
+              }
+              else if(MT != '' || TA != ''){
+                showError('Only NT or AC is required!', $('#button-bar'));
+                return
+              }
+            }
+            
+            this.disabled = true;            
+            
+            $('#search-results').html('<div id="spinner"><img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="70px"/><p>Searching...</p></div>');
+            $('#error').remove();
+
+            var service = "ols";
+            
+
+            google.script.run
+                .withSuccessHandler(
+                    function (result, element) {
+                        // process results
+                        var html = '<div id="accordion" class="accordion">';
+                        console.log(result);
+                        if (result) {
+                        
+                            Object.keys(result).sort().forEach(function(ontology_abbr) {
+                                var ontology = result[ontology_abbr]; //ontology is the whole result that contains all the ontology_abbr
+                                
+
+                                Object.keys(ontology["terms"]).forEach(function(term_idx) {
+                                    var term = ontology["terms"][term_idx];
+                                    var label = term["label"];
+                                    var MT = $('input[name=MT-text]').val();
+                                    var TA = $('input[name=TA-text]').val();
+                                    var parameter = $('#parameter').val(); 
+                                    if(parameter == 'modification parameters'){
+                                      if(MT == ''){
+                                        var modification = "NT=" + label + ";TA=" + TA + ";AC=" + term["ontology-obo_id"]
+                                      }
+                                      else{
+                                        var modification = "NT=" + label + ";MT=" + MT + ";TA=" + TA + ";AC=" + term["ontology-obo_id"];
+                                      }
+
+                                      if(ontology_abbr == "UNIMOD" || ontology_abbr == "MOD"){
+                                        html += '<h3><span class="ontology-abbr">' + ontology_abbr + '</span> - <span class="ontology-obo_id">' + term["ontology-obo_id"] + '</span></h3>' +
+                                        '<div><ul>'+
+                                        '<li>' +
+                                            '<div class="term-info">' +
+                                            '<a href="' + term["url"] + '" target="_blank">' + modification + '</a>' +
+                                            '</div>' +
+                                            '<div class="term-button"><button onclick="insertTerm(\'' + term["id"] + '\'); return false;">Insert</button></div>' +
+                                            '<div class="clearfix"></div>' +
+                                            '</li>';
+                                      }
+                                    }
+
+                                    if(parameter == 'instrument' || parameter == 'cleavage agent details' || parameter == 'label'){
+                                      var modification = "NT=" + label + ";AC=" + term["ontology-obo_id"];
+                                      if(ontology_abbr == "MS" || ontology_abbr == "PRIDE"){
+                                        
+                                        html += '<h3><span class="ontology-abbr">' + ontology_abbr + '</span> - <span class="ontology-obo_id">' + term["ontology-obo_id"] + '</span></h3>' +
+                                        '<div><ul>'+
+                                        '<li>' +
+                                            '<div class="term-info">' +
+                                            '<a href="' + term["url"] + '" target="_blank">' + modification + '</a>' +
+                                            '</div>' +
+                                            '<div class="term-button"><button onclick="insertTerm(\'' + term["id"] + '\'); return false;">Insert</button></div>' +
+                                            '<div class="clearfix"></div>' +
+                                            '</li>';
+                                      }
+                                    }
+                                    
+                                });
+                                
+                                html += '</ul></div>';
+                            });
+                               
+                        } else {
+                            html += "<p>Sorry, no results were found matching your query...</p>";
+                        }
+
+                        html += "</div>";
+
+                        $('#search-results').html(html);
+
+                        element.disabled = false;
+                        $('#spinner').addClass("hidden");
+                    })
+                .withFailureHandler(
+                    function (msg, element) {
+                        $('#spinner').addClass("hidden");
+                        showError(msg, $('#button-bar'));
+                        element.disabled = false;
+                    })
+                .withUserObject(this)
+                .runSearchSDRF(term);
+            return false;
+        }
+
+        function showError(msg, element) {
+            var div = $('<div id="error" class="error">' + msg + '</div>');
+            $(element).after(div);
+        }
+    </script>
+
+</body>
+
+</html>
