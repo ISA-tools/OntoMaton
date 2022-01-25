@@ -147,7 +147,7 @@ function getBioPortalOntologies() {
 
 function getLinkedOpenVocabularies(){
 
-  var vocabsURL = "http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list";
+  var vocabsURL = "https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list";
   var cache = CacheService.getPrivateCache();
 
   if (cache.get("lov_fragments") == null) {
