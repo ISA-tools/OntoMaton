@@ -134,7 +134,7 @@ function searchLOV(term) {
         var restriction = findRestrictionForCurrentColumn("LOV");
         var vocabularies = getLinkedOpenVocabularies();
 
-        var url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term;
+        var url = "https://lov.linkeddata.es/dataset/lov/api/v2/search?q=" + term;
         var vocabShortname;
         var vocabURI;
         if (restriction.source) {
@@ -142,7 +142,7 @@ function searchLOV(term) {
             if (vocabularies[vocabShortname]) {
                 vocabURI = vocabularies[vocabShortname].uri;
                 if (vocabURI)
-                    url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term + "&voc=" + vocabURI;
+                    url = "https://lov.linkeddata.es/dataset/lov/api/v2/search?q=" + term + "&voc=" + vocabURI;
             } else {
                 url = "";
             }

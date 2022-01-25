@@ -28,7 +28,7 @@ Please, note that at the time of the publication, OntoMaton was powered by the <
 
 - we upgraded the code to [Google Add-ons for Docs and Sheets](http://googledrive.blogspot.it/2014/03/add-ons.html), which [deprecated the Apps Script applications and the Script Gallery](http://googleappsdeveloper.blogspot.co.uk/2014/06/deprecating-script-gallery-in-old.html), used in the original OntoMaton version
 - we upgraded to the new BioPortal API for searching ontology terms and annotator services (see BioPortal 4.0 release notes), as the old API was deprecated in 2014
-- we extended the ontology search functionality to support REST services from the <a href="http://lov.okfn.org/">Linked Open Vocabularies</a> and the <a href="https://www.ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
+- we extended the ontology search functionality to support REST services from the <a href="https://lov.linkeddata.es/">Linked Open Vocabularies</a> and the <a href="https://www.ebi.ac.uk/ols/">EBI Ontology Lookup Service</a>, thus now allowing ontology term searches over three separate services.
 
 For more information, see [our blog posts on OntoMaton](https://isatools.wordpress.com/?s=ontomaton). 
 
@@ -82,7 +82,7 @@ You can access it through the 'Add On' menu option.
 
 ### Ontology Search
 
-From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](http://lov.okfn.org) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
+From OntoMaton, you can search three different services within one tool: the [NCBO Bioportal](http://bioportal.bioontology.org/), [Linked Open Vocabularies](https://lov.linkeddata.es) and [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols/), and insert the terms in your Google Spreadsheet directly. Full term provenance is recorded for you and later downstream analysis.
 
 <div align="center">
 <img src="https://github.com/ISA-tools/OntoMaton/blob/master/figures/ontomaton-fig8.png" width="700">
