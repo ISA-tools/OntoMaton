@@ -251,7 +251,7 @@ function searchOLS(term) {
         ontologyDict[ontologyLabel] = {"ontology-name": elem.ontology_name, "terms": []};
         record = {
           label: elem.label,
-          id: elem.id,
+          id: elem.short_form,
           'ontology-label': elem.ontology_prefix,
           'ontology-name': elem.ontology_name,
           accession: elem.iri,//elem.obo_id,
@@ -293,7 +293,7 @@ function handleTermInsertion(term_id) {
     // figure out whether the Term Source REF and Term Accession Number columns exist, if they do exist at all. Insertion technique will vary
     // depending on the file being looked at.
     var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
-    
+
     // add all terms into a separate sheet with all their information.
     if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
         insertOntologySourceInformationInInvestigationBlock(ontologyObject);
