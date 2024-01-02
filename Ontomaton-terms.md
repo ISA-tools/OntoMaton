@@ -13,6 +13,7 @@
 <li><a href="http://data.bioontology.org/documentation" rel="nofollow">NBCO Bioportal</a></li>
 <li><a href="https://www.ebi.ac.uk/ols/docs/api" rel="nofollow">EMBL-EBI Ontology Lookup Service</a></li>
 <li><a href="https://lov.linkeddata.es/dataset/lov/api" rel="nofollow">Linked Open Vocabularies catalogue</a></li>
+<li><a href="https://service.tib.eu/ts4tib/api" rel="nofollow">TIB Terminology Service</a></li>
 </ul>
 
 
@@ -30,11 +31,11 @@ Bioinformatics 2013 29: 525-527. <a href="https://doi.org/10.1093/bioinformatics
 
 ----
 
- 
+
 ### Video Tutorial
 
 Access the video tutorial showing how to install and use OntoMaton (version 1) [here](http://www.youtube.com/watch?v=Qs0nxGBfQac&feature=player_embedded).
- 
+
 ### Templates
 
 Templates can be found through accessing them on the google templates site. OntoMaton templates are [here](https://drive.google.com/templates?type=spreadsheets&q=ontomaton).

@@ -29,7 +29,7 @@
         .hidden {
             display: none;
         }
-        
+
         .error {
           padding-top: 10px;
           color: #e74c3c;
@@ -233,6 +233,7 @@
                         <option value="bioportal" selected>Search BioPortal</option>
                         <option value="lov">Search LOV</option>
                         <option value="ols">Search OLS</option>
+                        <option value="tib-ols">Search TIB TS</option>
                     </select>
                 </div>
 
@@ -302,21 +303,21 @@
          * the sidebar UI with the resulting translation.
          */
         function runSearch() {
-            
+
             var term = $('input[name=search-text]').val();
-            
+
             if(term === "") {
                 showError('Please enter a search term.', $('#button-bar'));
                 return
             }
-            
-            this.disabled = true;            
-            
+
+            this.disabled = true;
+
             $('#search-results').html('<div id="spinner"><img src="//s-media-cache-ak0.pinimg.com/originals/0a/59/71/0a59718a5ee79a0558930ca9907c0659.gif" width="70px"/><p>Searching...</p></div>');
             $('#error').remove();
 
             var service = $('#service').val();
-            
+
 
             google.script.run
                 .withSuccessHandler(
@@ -325,10 +326,10 @@
                         var html = '<div id="accordion" class="accordion">';
                         console.log(result);
                         if (result) {
-                        
+
                             Object.keys(result).sort().forEach(function(ontology_abbr) {
                                 var ontology = result[ontology_abbr];
-                                
+
                                 html += '<h3><span class="ontology-abbr">' + ontology_abbr + '</span> - <span class="ontology-name">' + ontology["ontology-name"] + '</span></h3>' +
                                     '<div><ul>'
 
@@ -345,10 +346,10 @@
                                         '<div class="clearfix"></div>' +
                                         '</li>';
                                 });
-                                
+
                                 html += '</ul></div>';
                             });
-                               
+
                         } else {
                             html += "<p>Sorry, no results were found matching your query...</p>";
                         }

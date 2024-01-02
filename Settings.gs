@@ -38,7 +38,7 @@ function showSettings() {
     SpreadsheetApp.getUi().showSidebar(html);
 }
 
-function loadOntologies() { 
+function loadOntologies() {
     return {
         'BioPortal': getBioPortalOntologies(),
         'LOV': getLinkedOpenVocabularies(),
@@ -61,8 +61,8 @@ function viewRestrictionHandler() {
      var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
 
     if (restrictionSheet == undefined) {
-        UiApp.getActiveApplication().getElementById("status").setText("Restriction sheet doesn't exist yet. Add a restriction and it will be created automatically.");
-        return UiApp.getActiveApplication();
+        var htmlOutput = HtmlService.createHtmlOutput("<p>Restriction sheet doesn't exist yet. Add a restriction and it will be created automatically.</p>");
+        SpreadsheetApp.getActiveSpreadsheet().show(htmlOutput);
     } else {
         SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(restrictionSheet);
     }
@@ -79,11 +79,11 @@ function loadPreferences() {
 }
 
 function addRestrictionHandler(params) {
-  
+
     var ontology = params.ontology.trim();
     var columnName = params.columnName.trim();
     var service = params.service.trim();
-    
+
     var restrictionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Restrictions");
 
     if (restrictionSheet == undefined) {
@@ -99,7 +99,7 @@ function addRestrictionHandler(params) {
         SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
     }
 
-  
+
     if(columnName !== "") {
         var nextBlankRow = findNextBlankRow(restrictionSheet);
         restrictionSheet.getRange(nextBlankRow, 1).setValue(columnName);
@@ -108,7 +108,7 @@ function addRestrictionHandler(params) {
         restrictionSheet.getRange(nextBlankRow, 6).setValue(service);
         return "Restriction for " + columnName + " Added"
   }
-  
+
   return "Column name cannot be empty."
 }
 
@@ -205,3 +205,39 @@ function getOLSOntologies() {
   return ontologyDict;
 }
 
+
+/**
+ * @method
+ * @name getTIBOLSOntologies
+ * @description gets all the ontologies from TIB-OLS
+ * @return{Object}
+ */
+function getTIBOLSOntologies() {
+  var ontologiesUri = TIBOLS_API_BASE_URI + "/ontologies?size=" + OLS_PAGINATION_SIZE;
+  var  cache = CacheService.getPrivateCache(), res, text, json, ontologies = [];
+
+  if (cache.get("tib-ols") == null) {
+    do {
+      res = UrlFetchApp.fetch(ontologiesUri);
+      text = res.getContentText('utf-8');
+      json = JSON.parse(text);
+      ontologies = ontologies.concat(json._embedded.ontologies);
+      ontologiesUri = json._links && json._links.next && json._links.next.href;
+    }
+    while (ontologiesUri);
+    // store into cache the result as plain text
+    splitResultAndCache(cache, "tib-ols", JSON.stringify(ontologies));
+  } else {
+    ontologies = JSON.parse(getCacheResultAndMerge(cache, "tib-ols"));
+  }
+
+  var ontologyDict = {};
+  ontologies.forEach(function(ontology) {
+    var config = ontology.config || {};
+    ontologyDict[ontology.ontologyId] = {
+      name: config.title,
+      uri: config.id
+    };
+  });
+  return ontologyDict;
+}
