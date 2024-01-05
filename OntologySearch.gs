@@ -317,7 +317,7 @@ function handleTermInsertion(term_id) {
                 sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
                 sheet.getRange(row, nextColumn).setValue(ontologyObject.url);
             } else {
-                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '","' + ontologyObject.term + '")')
+                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '";"' + ontologyObject.term + '")')
             }
         }
     }

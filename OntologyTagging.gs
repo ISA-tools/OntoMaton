@@ -184,7 +184,7 @@ function replaceTermWithSelectedValue(term_id) {
               sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
               sheet.getRange(row, nextColumn).setValue(ontologyObject.accession);
             } else {
-              sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("'+  ontologyObject.accession +'","' + ontologyObject.term + '")')
+              sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("'+  ontologyObject.accession +'";"' + ontologyObject.term + '")')
             }
                 }
             }
