@@ -53,6 +53,8 @@ function createSettingsTab() {
         settingsSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Settings");
         settingsSheet.getRange("A1").setValue("insertTermInOneColumn");
         settingsSheet.getRange("B1").setValue(true);
+        settingsSheet.getRange("A2").setValue("CustomOLS3_API_BASE_URI");
+        settingsSheet.getRange("B2").setValue("https://service.tib.eu/ts4tib/api");
         SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(activeSheet);
     }
 }
@@ -115,6 +117,11 @@ function addRestrictionHandler(params) {
 function setOntologyInsertionPreference(insertSingleColumn) {
     var settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Settings");
     settingsSheet.getRange("B1").setValue(insertSingleColumn);
+}
+
+function setCustomOls3ApiBaseUri(new_url) {
+    var settingsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Settings");
+    settingsSheet.getRange("B2").setValue(new_url);
 }
 
 
@@ -229,6 +236,42 @@ function getTIBOLSOntologies() {
     splitResultAndCache(cache, "tib-ols", JSON.stringify(ontologies));
   } else {
     ontologies = JSON.parse(getCacheResultAndMerge(cache, "tib-ols"));
+  }
+
+  var ontologyDict = {};
+  ontologies.forEach(function(ontology) {
+    var config = ontology.config || {};
+    ontologyDict[ontology.ontologyId] = {
+      name: config.title,
+      uri: config.id
+    };
+  });
+  return ontologyDict;
+}
+
+/**
+ * @method
+ * @name getCustomOLS3Ontologies
+ * @description gets all the ontologies from a custom OLS3 endpoint
+ * @return{Object}
+ */
+function getCustomOLS3Ontologies() {
+  var ontologiesUri = CUSTOMOLS3_API_BASE_URI + "/ontologies?size=" + OLS_PAGINATION_SIZE;
+  var  cache = CacheService.getPrivateCache(), res, text, json, ontologies = [];
+
+  if (cache.get("custom-ols3") == null) {
+    do {
+      res = UrlFetchApp.fetch(ontologiesUri);
+      text = res.getContentText('utf-8');
+      json = JSON.parse(text);
+      ontologies = ontologies.concat(json._embedded.ontologies);
+      ontologiesUri = json._links && json._links.next && json._links.next.href;
+    }
+    while (ontologiesUri);
+    // store into cache the result as plain text
+    splitResultAndCache(cache, "custom-ols3", JSON.stringify(ontologies));
+  } else {
+    ontologies = JSON.parse(getCacheResultAndMerge(cache, "custom-ols3"));
   }
 
   var ontologyDict = {};

@@ -54,6 +54,8 @@ function performSearch(service, term) {
       return searchOLS(term);
     case "tib-ols":
       return searchTIBOLS(term);
+    case "custom-ols3":
+      return searchCustomOLS3(term);
     default:
       return searchLOV(term);
   }
@@ -287,6 +289,63 @@ function searchTIBOLS(term) {
     var restriction = findRestrictionForCurrentColumn("OLS");
     var ontologies = getTIBOLSOntologies();
     var url = TIBOLS_API_BASE_URI + '/search';
+    var queryObj = {
+      q: term,
+      rows: OLS_PAGINATION_SIZE,
+      start: 0,
+      ontology: restriction ? restriction.ontologyId : undefined
+    };
+    var queryString = jsonToQueryString(queryObj);
+    url += '?' + queryString;
+    var cacheResult = fetchFromCache(url);
+    if (cacheResult) {
+      return JSON.parse(cacheResult);
+    }
+    var text = UrlFetchApp.fetch(url).getContentText(), json = JSON.parse(text), ontologyDict = {};
+
+    var docs = json.response && json.response.docs;
+    if (!docs || docs.length === 0) {
+      throw "No Result found.";
+    }
+    docs.forEach(function(elem) {
+      var ontology = ontologies[elem.ontology_name], ontologyLabel = elem.ontology_prefix, record;
+      if (!ontologyDict[ontologyLabel]) {
+        ontologyDict[ontologyLabel] = {"ontology-name": elem.ontology_name, "terms": []};
+        record = {
+          label: elem.label,
+          id: elem.short_form,
+          'ontology-label': elem.ontology_prefix,
+          'ontology-name': elem.ontology_name,
+          accession: elem.iri,//elem.obo_id,
+          ontology: elem.ontology_name,
+          details: '',
+          url: elem.iri
+        };
+
+        storeInCache(record.id, JSON.stringify(record));
+        ontologyDict[ontologyLabel].terms.push(record);
+      }
+    });
+    storeInCache(url, JSON.stringify(ontologyDict));
+    // Logger.log(ontologyDict);
+    return ontologyDict;
+  }
+  catch(e) {
+    Logger.log(e);
+    throw(e);
+  }
+}
+
+/**
+ * @method
+ * @name searchCustomOLS3
+ * @param{string} term
+ */
+function searchCustomOLS3(term) {
+  try {
+    var restriction = findRestrictionForCurrentColumn("OLS");
+    var ontologies = getCustomOLS3Ontologies();
+    var url = CUSTOMOLS3_API_BASE_URI + '/search';
     var queryObj = {
       q: term,
       rows: OLS_PAGINATION_SIZE,

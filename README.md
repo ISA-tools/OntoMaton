@@ -106,7 +106,7 @@ From the settings screen, you can configure:
 
 * How terms should be inserted in to the spreadsheet when not in 'ISA mode' (where the next columns aren't named 'Term Source REF' or 'Term Source Accession'). The two options are as either as a hyperlink to the term in Bioportal/OLS/LOV or as a term name with the hyperlink in parentheses.
 * Restrictions, which specify for zero or more columns (with a name in the first cell), restrictions that should be placed on the search space per each of the ontology lookup services we use (Bioportal/OLS/LOV) E.g. the column 'Label' is restricted to terms from the Chemincal Entities of Biomedical Interest ontology (ChEBI). Please, note that for instance if a column has a restriction over the BioPortal service, the restiction will not have an effect if searching terms with OLS.
-
+* Setting a Custom API base URL for OLS3-compatible terminology services. 
 
 ### Restricting OntoMaton's search space
 

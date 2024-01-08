@@ -35,6 +35,7 @@
 var TIBOLS_API_BASE_URI = "https://service.tib.eu/ts4tib/api";
 var OLS_API_BASE_URI = "http://www.ebi.ac.uk/ols4/api";
 var OLS_PAGINATION_SIZE = 500; // MAX pagination size
+var CUSTOMOLS3_API_BASE_URI = "https://service.tib.eu/ts4tib/api"; // replace with Settings sheet lookup
 
 /**
  * @description serializes an object to a queryString
