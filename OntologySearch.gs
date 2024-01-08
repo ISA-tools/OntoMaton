@@ -52,6 +52,10 @@ function performSearch(service, term) {
       return searchLOV(term);
     case "ols":
       return searchOLS(term);
+    case "tib-ols":
+      return searchTIBOLS(term);
+    case "custom-ols3":
+      return searchCustomOLS3(term);
     default:
       return searchLOV(term);
   }
@@ -134,7 +138,7 @@ function searchLOV(term) {
         var restriction = findRestrictionForCurrentColumn("LOV");
         var vocabularies = getLinkedOpenVocabularies();
 
-        var url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term;
+        var url = "https://lov.linkeddata.es/dataset/lov/api/v2/search?q=" + term;
         var vocabShortname;
         var vocabURI;
         if (restriction.source) {
@@ -142,7 +146,7 @@ function searchLOV(term) {
             if (vocabularies[vocabShortname]) {
                 vocabURI = vocabularies[vocabShortname].uri;
                 if (vocabURI)
-                    url = "http://lov.okfn.org/dataset/lov/api/v2/search?q=" + term + "&voc=" + vocabURI;
+                    url = "https://lov.linkeddata.es/dataset/lov/api/v2/search?q=" + term + "&voc=" + vocabURI;
             } else {
                 url = "";
             }
@@ -251,7 +255,122 @@ function searchOLS(term) {
         ontologyDict[ontologyLabel] = {"ontology-name": elem.ontology_name, "terms": []};
         record = {
           label: elem.label,
-          id: elem.id,
+          id: elem.short_form,
+          'ontology-label': elem.ontology_prefix,
+          'ontology-name': elem.ontology_name,
+          accession: elem.iri,//elem.obo_id,
+          ontology: elem.ontology_name,
+          details: '',
+          url: elem.iri
+        };
+
+        storeInCache(record.id, JSON.stringify(record));
+        ontologyDict[ontologyLabel].terms.push(record);
+      }
+    });
+    storeInCache(url, JSON.stringify(ontologyDict));
+    // Logger.log(ontologyDict);
+    return ontologyDict;
+  }
+  catch(e) {
+    Logger.log(e);
+    throw(e);
+  }
+}
+
+
+/**
+ * @method
+ * @name searchTIBOLS
+ * @param{string} term
+ */
+function searchTIBOLS(term) {
+  try {
+    var restriction = findRestrictionForCurrentColumn("OLS");
+    var ontologies = getTIBOLSOntologies();
+    var url = TIBOLS_API_BASE_URI + '/search';
+    var queryObj = {
+      q: term,
+      rows: OLS_PAGINATION_SIZE,
+      start: 0,
+      ontology: restriction ? restriction.ontologyId : undefined
+    };
+    var queryString = jsonToQueryString(queryObj);
+    url += '?' + queryString;
+    var cacheResult = fetchFromCache(url);
+    if (cacheResult) {
+      return JSON.parse(cacheResult);
+    }
+    var text = UrlFetchApp.fetch(url).getContentText(), json = JSON.parse(text), ontologyDict = {};
+
+    var docs = json.response && json.response.docs;
+    if (!docs || docs.length === 0) {
+      throw "No Result found.";
+    }
+    docs.forEach(function(elem) {
+      var ontology = ontologies[elem.ontology_name], ontologyLabel = elem.ontology_prefix, record;
+      if (!ontologyDict[ontologyLabel]) {
+        ontologyDict[ontologyLabel] = {"ontology-name": elem.ontology_name, "terms": []};
+        record = {
+          label: elem.label,
+          id: elem.short_form,
+          'ontology-label': elem.ontology_prefix,
+          'ontology-name': elem.ontology_name,
+          accession: elem.iri,//elem.obo_id,
+          ontology: elem.ontology_name,
+          details: '',
+          url: elem.iri
+        };
+
+        storeInCache(record.id, JSON.stringify(record));
+        ontologyDict[ontologyLabel].terms.push(record);
+      }
+    });
+    storeInCache(url, JSON.stringify(ontologyDict));
+    // Logger.log(ontologyDict);
+    return ontologyDict;
+  }
+  catch(e) {
+    Logger.log(e);
+    throw(e);
+  }
+}
+
+/**
+ * @method
+ * @name searchCustomOLS3
+ * @param{string} term
+ */
+function searchCustomOLS3(term) {
+  try {
+    var restriction = findRestrictionForCurrentColumn("OLS");
+    var ontologies = getCustomOLS3Ontologies();
+    var url = CUSTOMOLS3_API_BASE_URI + '/search';
+    var queryObj = {
+      q: term,
+      rows: OLS_PAGINATION_SIZE,
+      start: 0,
+      ontology: restriction ? restriction.ontologyId : undefined
+    };
+    var queryString = jsonToQueryString(queryObj);
+    url += '?' + queryString;
+    var cacheResult = fetchFromCache(url);
+    if (cacheResult) {
+      return JSON.parse(cacheResult);
+    }
+    var text = UrlFetchApp.fetch(url).getContentText(), json = JSON.parse(text), ontologyDict = {};
+
+    var docs = json.response && json.response.docs;
+    if (!docs || docs.length === 0) {
+      throw "No Result found.";
+    }
+    docs.forEach(function(elem) {
+      var ontology = ontologies[elem.ontology_name], ontologyLabel = elem.ontology_prefix, record;
+      if (!ontologyDict[ontologyLabel]) {
+        ontologyDict[ontologyLabel] = {"ontology-name": elem.ontology_name, "terms": []};
+        record = {
+          label: elem.label,
+          id: elem.short_form,
           'ontology-label': elem.ontology_prefix,
           'ontology-name': elem.ontology_name,
           accession: elem.iri,//elem.obo_id,
@@ -293,7 +412,7 @@ function handleTermInsertion(term_id) {
     // figure out whether the Term Source REF and Term Accession Number columns exist, if they do exist at all. Insertion technique will vary
     // depending on the file being looked at.
     var sourceAndAccessionPositions = getSourceAndAccessionPositionsForTerm(selectedRange.getColumn());
-    
+
     // add all terms into a separate sheet with all their information.
     if (sourceAndAccessionPositions.sourceRef != undefined && sourceAndAccessionPositions.accession != undefined) {
         insertOntologySourceInformationInInvestigationBlock(ontologyObject);
@@ -317,7 +436,7 @@ function handleTermInsertion(term_id) {
                 sheet.getRange(row, selectedColumn).setValue(ontologyObject.term);
                 sheet.getRange(row, nextColumn).setValue(ontologyObject.url);
             } else {
-                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '","' + ontologyObject.term + '")')
+                sheet.getRange(row, selectedColumn).setFormula('=HYPERLINK("' + ontologyObject.url + '";"' + ontologyObject.term + '")')
             }
         }
     }

@@ -85,6 +85,14 @@
             google.script.run.setOntologyInsertionPreference(insertionOneColumn);
         }
 
+        function updateCustomOLS3_API_BASE_URI() {
+            new_base_url = $('#option_CustomOLS3_API_BASE_URI').string();
+            console.log("new_base_url is set to:");
+            console.log(new_base_url);
+            google.script.run.setCustomOls3ApiBaseUri(new_base_url);
+        }
+
+
         function setOntologies(data) {
             ontologies = data;
             $('#loading').addClass('hidden');
@@ -157,10 +165,18 @@
         <br />
         <input type="radio" id="option_same_column" name="ontologyFormat" value="same"
             onchange="updateInsertionPreferences()">
-        <label for="male">Place term name and accession in same column</label><br>
+        <label for="option_same_column">Place term name and accession in same column</label><br>
         <input type="radio" id="option_different_column" name="ontologyFormat" onchange="updateInsertionPreferences()"
             value="different" checked>
-        <label for="female">Place term name and accession in different columns.</label><br>
+        <label for="option_different_column">Place term name and accession in different columns.</label><br>
+
+        <br /><br />
+        <p style="font-weight: bolder">Custom OLS3 API BASE_URI</p>
+        <br />
+        <input type="url" id="option_CustomOLS3_API_BASE_URI" name="CustomOLS3_API_BASE_URI"
+            onchange="updateCustomOLS3_API_BASE_URI()">
+        <label for="option_CustomOLS3_API_BASE_URI">OLS3 API base URI (w/o /search or /ontologies at end)</label><br>
+
     </div>
 
     <br /><br />
